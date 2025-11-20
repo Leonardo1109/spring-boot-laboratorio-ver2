@@ -82,9 +82,4 @@ public class VisitaService {
         visitaRepository.deleteById(id);
     }
 
-    @Transactional 
-    public List<VisitaGetDTO> getVisitaByRFC(String rfc){
-        List<Visita> visitas = visitaRepository.findByNoCuentaRFCContainingIgnoreCase(rfc);
-        return visitaMapper.toDtos(visitas);
-    }
 }

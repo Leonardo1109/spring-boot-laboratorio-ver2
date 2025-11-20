@@ -79,10 +79,4 @@ public class EquipoService {
         equipoRepository.deleteById(id);
     }
 
-    @Transactional
-    public List<EquipoGetDTO> buscarPorNombre(String nombre){
-        List<Equipo> equipos = equipoRepository.findByDescripcionContainingIgnoreCase(nombre);
-        return equipoMapper.toDtoList(equipos);
-    }
-    
 }

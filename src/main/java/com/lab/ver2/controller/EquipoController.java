@@ -43,11 +43,5 @@ public class EquipoController {
         equipoService.deleteEquipo(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/buscar")
-    public List<EquipoGetDTO> buscarPorNombre(@RequestParam String nombre) {
-        return equipoService.buscarPorNombre(nombre);
-    }
-
     
 }

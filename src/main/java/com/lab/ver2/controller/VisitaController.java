@@ -45,10 +45,4 @@ public class VisitaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/nocuenta-rfc")
-    public List<VisitaGetDTO> getVisitaByRFC(@RequestParam String rfc){
-        return visitaService.getVisitaByRFC(rfc);
-    }
-    
-    
 }
