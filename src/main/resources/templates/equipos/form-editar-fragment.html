@@ -1,0 +1,64 @@
+<div class="mt-4">
+
+    <h4 class="mb-3">Editar equipo: [[${equipo.descripcion}]]</h4>
+
+    <form 
+        th:hx-put="@{/api/equipos/{id}(id=${equipo.id})}"
+        hx-swap="none"
+        hx-on::after-request="
+            if (event.detail.successful) {
+                alert('Equipo actualizado correctamente');
+                htmx.ajax('GET', '/pantallas/equipos/editar', '#main-content');
+            }
+        "
+    >
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción</label>
+            <input name="descripcion" class="form-control"
+                   th:value="${equipo.descripcion}" required minlength="5">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Ubicación</label>
+            <input name="ubicacion" class="form-control"
+                   th:value="${equipo.ubicacion}" required minlength="5">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Código Inventario</label>
+            <input name="codigoInventario" class="form-control"
+                   th:value="${equipo.codigoInventario}" required minlength="5">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Estatus</label>
+            <select name="estatusId" class="form-select">
+                <option th:selected="${equipo.estatus.id == 1}" value="1">Disponible</option>
+                <option th:selected="${equipo.estatus.id == 2}" value="2">En uso</option>
+                <option th:selected="${equipo.estatus.id == 3}" value="3">Reservado</option>
+                <option th:selected="${equipo.estatus.id == 4}" value="4">Fuera de servicio</option>
+                <option th:selected="${equipo.estatus.id == 5}" value="5">En mantenimiento</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Tipo equipo</label>
+            <select name="tipoEquipoId" class="form-select">
+                <option th:selected="${equipo.tipoEquipo.id == 1}" value="1">Laptop</option>
+                <option th:selected="${equipo.tipoEquipo.id == 2}" value="2">Computadora de escritorio</option>
+                <option th:selected="${equipo.tipoEquipo.id == 3}" value="3">Multímetro</option>
+                <option th:selected="${equipo.tipoEquipo.id == 4}" value="4">Osciloscopio</option>
+                <option th:selected="${equipo.tipoEquipo.id == 5}" value="5">Impresora 3D</option>
+                <option th:selected="${equipo.tipoEquipo.id == 6}" value="6">Proyector</option>
+                <option th:selected="${equipo.tipoEquipo.id == 7}" value="7">Robots educativos</option>
+                <option th:selected="${equipo.tipoEquipo.id == 8}" value="8">Tablet</option>
+                <option th:selected="${equipo.tipoEquipo.id == 9}" value="9">Equipo de redes</option>
+                <option th:selected="${equipo.tipoEquipo.id == 10}" value="10">Herramientas de laboratorio</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 py-2">Actualizar</button>
+
+    </form>
+</div>

@@ -1,0 +1,107 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h2 class="mb-4">Crear Equipo</h2>
+
+                <form 
+                    class="mt-3"
+                    hx-post="/api/equipos"
+                    hx-swap="none"
+                    hx-on::after-request="
+                        if (event.detail.successful) {
+                            alert('Equipo creado correctamente');
+                            htmx.ajax('GET', '/pantallas/crear', '#main-content');
+                        }
+                    "
+                >
+            
+
+                    <!-- DESCRIPCION -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descripción del equipo</label>
+                        <input 
+                            type="text" 
+                            name="descripcion" 
+                            class="form-control" 
+                            minlength="5" 
+                            maxlength="200"
+                            required>
+                        <div class="form-text">Ingrese una descripción clara del equipo.</div>
+                    </div>
+
+                    <!-- UBICACION -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ubicación</label>
+                        <input 
+                            type="text" 
+                            name="ubicacion" 
+                            class="form-control" 
+                            minlength="5" 
+                            maxlength="100"
+                            required>
+                        <div class="form-text">Ejemplo: Laboratorio 2, Almacén General, etc.</div>
+                    </div>
+
+                    <!-- CÓDIGO INVENTARIO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Código de Inventario</label>
+                        <input 
+                            type="text" 
+                            name="codigoInventario" 
+                            class="form-control" 
+                            minlength="5" 
+                            maxlength="50"
+                            required>
+                        <div class="form-text">Debe coincidir con el inventario institucional.</div>
+                    </div>
+
+                    <!-- ESTATUS -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Estatus</label>
+                        <select 
+                            name="estatusId" 
+                            class="form-select"
+                            required>
+                            <option value="" selected disabled>Selecciona un estatus</option>
+                            <option value="1">Disponible</option>
+                            <option value="2">En uso</option>
+                            <option value="3">Reservado</option>
+                            <option value="4">Fuera de servicio</option>
+                            <option value="5">En mantenimiento</option>
+                        </select>
+                    </div>
+
+                    <!-- TIPO EQUIPO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Tipo de Equipo</label>
+                        <select 
+                            name="tipoEquipoId" 
+                            class="form-select"
+                            required>
+                            <option value="" selected disabled>Selecciona un tipo</option>
+                            <option value="1">Laptop</option>
+                            <option value="2">Computadora de escritorio</option>
+                            <option value="3">Multímetro</option>
+                            <option value="4">Osciloscopio</option>
+                            <option value="5">Impresora 3D</option>
+                            <option value="6">Proyector</option>
+                            <option value="7">Robots educativos</option>
+                            <option value="8">Tablet</option>
+                            <option value="9">Equipo de redes</option>
+                            <option value="10">Herramientas de laboratorio</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        Guardar Equipo
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -79,4 +79,10 @@ public class EquipoService {
         equipoRepository.deleteById(id);
     }
 
+
+    public List<EquipoGetDTO> searchByDescripcion(String texto) {
+        return equipoMapper.toDtoList(
+            equipoRepository.findByDescripcionContainingIgnoreCase(texto));
+    }
+    
 }

@@ -1,0 +1,35 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h2 class="mb-4">Editar Equipo</h2>
+
+                <!-- BUSCADOR -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Buscar por nombre</label>
+                    <input 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Escribe para buscar..."
+                        hx-get="/pantallas/equipos/buscar"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#resultados"
+                        hx-include="[name='search']"
+                        name="search"
+                    >
+                </div>
+
+                <!-- RESULTADOS -->
+                <div id="resultados"></div>
+
+                <hr>
+
+                <!-- FORMULARIO DE EDICIÓN (VACÍO AL INICIO) -->
+                <div id="form-editar"></div>
+
+            </div>
+        </div>
+    </div>
+</div>

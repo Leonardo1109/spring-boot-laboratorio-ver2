@@ -1,0 +1,17 @@
+<div>
+    <ul class="list-group">
+        <li class="list-group-item fw-bold text-primary">Resultados</li>
+
+        <th:block th:each="e : ${equipos}">
+            <li class="list-group-item">
+                <button 
+                    class="btn btn-link"
+                    hx-get="/pantallas/equipos/form-editar?id=[[${e.id}]]"
+                    hx-target="#form-editar"
+                    hx-swap="innerHTML">
+                    [[${e.descripcion}]] (ID [[${e.id}]])
+                </button>
+            </li>
+        </th:block>
+    </ul>
+</div>
