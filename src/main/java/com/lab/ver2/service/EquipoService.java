@@ -84,5 +84,10 @@ public class EquipoService {
         return equipoMapper.toDtoList(
             equipoRepository.findByDescripcionContainingIgnoreCase(texto));
     }
+
+    public List<Equipo> getFirst5() {
+        return equipoRepository.findTop5ByOrderByIdDesc();
+    }
+    
     
 }

@@ -33,7 +33,8 @@ public class PantallasController {
     }
 
     @GetMapping("/equipos/editar")
-    public String editarEquipo() {
+    public String editarEquipo(Model model) {
+        model.addAttribute("equiposRecientes", equipoService.getFirst5());
         return "equipos/editar-equipo";
     }
 

@@ -10,4 +10,6 @@ import com.lab.ver2.model.Equipo;
 @Repository
 public interface EquipoRepository extends JpaRepository<Equipo, Integer>{
     List<Equipo> findByDescripcionContainingIgnoreCase(String descripcion);
+    List<Equipo> findTop5ByOrderByIdDesc();
+
 }
