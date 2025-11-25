@@ -21,6 +21,7 @@ public class VisitaPostDTO {
     @Size(min = 3, max = 120)
     private String apellidoMaterno;
     
+    @NotBlank
     @Size(min = 3, max = 120)
     private String apellidoPaterno;
     

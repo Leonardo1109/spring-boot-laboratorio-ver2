@@ -82,4 +82,13 @@ public class VisitaService {
         visitaRepository.deleteById(id);
     }
 
+    public List<VisitaGetDTO> searchByNCRFC(String texto) {
+        return visitaMapper.toDtos(
+            visitaRepository.findByNoCuentaRFCContainingIgnoreCase(texto));
+    }
+
+    public List<Visita> getFirst5() {
+        return visitaRepository.findTop5ByOrderByIdDesc();
+    }
+
 }

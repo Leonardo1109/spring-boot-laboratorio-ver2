@@ -6,6 +6,7 @@
 
                 <h2 class="mb-4">Crear Equipo</h2>
 
+                <!-- primero post, despues de la peticion, redirigir a pantalla principal -->
                 <form 
                     class="mt-3"
                     hx-post="/api/equipos"
@@ -13,12 +14,11 @@
                     hx-on::after-request="
                         if (event.detail.successful) {
                             alert('Equipo creado correctamente');
-                            htmx.ajax('GET', '/pantallas/crear', '#main-content');
+                            htmx.ajax('GET', '/pantallas/equipos/crear', '#main-content');
                         }
                     "
                 >
             
-
                     <!-- DESCRIPCION -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Descripción del equipo</label>

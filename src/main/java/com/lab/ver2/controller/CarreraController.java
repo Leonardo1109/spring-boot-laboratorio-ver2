@@ -22,5 +22,13 @@ public class CarreraController {
     public ResponseEntity<List<CarreraDTO>> getAll(){
         return ResponseEntity.ok(carreraMapper.toDtos(carreraRepository.findAll()));
     }
+
+    @GetMapping("/options")
+    public String getCarreraOptions() {
+        return carreraRepository.findAll().stream()
+                .map(c -> "<option value=\"" + c.getId() + "\">" + c.getNombre() + "</option>")
+                .reduce("", String::concat);
+    }
+
 }
 

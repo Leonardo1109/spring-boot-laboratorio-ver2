@@ -1,0 +1,130 @@
+<div class="mt-4">
+
+    <h4 class="mb-3">Editar Visita: [[${visita.noCuentaRFC}]]</h4>
+
+    <form 
+        th:hx-put="@{/api/visitas/{id}(id=${visita.id})}"
+        hx-swap="none"
+        hx-on::after-request="
+            if (event.detail.successful && event.detail.elt === this && event.detail.xhr && event.detail.xhr.status === 200) {
+                alert('Visita actualizada correctamente');
+                htmx.ajax('GET', '/pantallas/visitas/editar', '#main-content');
+            }
+        "
+    >
+
+        <!-- NO CUENTA / RFC -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">No. Cuenta / RFC</label>
+            <input 
+                type="text" 
+                name="noCuentaRFC"
+                class="form-control"
+                minlength="9"
+                maxlength="13"
+                required
+                th:value="${visita.noCuentaRFC}"
+            >
+        </div>
+
+        <!-- NOMBRE -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input 
+                type="text"
+                name="nombre"
+                class="form-control"
+                minlength="3"
+                maxlength="120"
+                required
+                th:value="${visita.nombre}"
+            >
+        </div>
+
+        <!-- APELLIDO MATERNO -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Apellido Materno</label>
+            <input 
+                type="text"
+                name="apellidoMaterno"
+                class="form-control"
+                minlength="3"
+                maxlength="120"
+                required
+                th:value="${visita.apellidoMaterno}"
+            >
+        </div>
+
+        <!-- APELLIDO PATERNO -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Apellido Paterno</label>
+            <input 
+                type="text"
+                name="apellidoPaterno"
+                class="form-control"
+                minlength="3"
+                maxlength="120"
+                th:value="${visita.apellidoPaterno}"
+            >
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Email</label>
+            <input 
+                type="email"
+                name="email"
+                class="form-control"
+                maxlength="120"
+                required
+                th:value="${visita.email}"
+            >
+        </div>
+
+        <!-- ROL -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Rol</label>
+            <select name="rolId" class="form-select" required>
+                <option value="1" th:selected="${visita.rol.id == 1}">Estudiante</option>
+                <option value="2" th:selected="${visita.rol.id == 2}">Profesor</option>
+                <option value="3" th:selected="${visita.rol.id == 3}">Servicio Social</option>
+                <option value="4" th:selected="${visita.rol.id == 4}">Administrador</option>
+                <option value="5" th:selected="${visita.rol.id == 5}">Becario</option>
+                <option value="6" th:selected="${visita.rol.id == 6}">Visitante</option>
+            </select>
+        </div>
+
+        <!-- CARRERA -->
+        <select id="carreraId"
+                name="carreraId"
+                class="form-select"
+                required
+                hx-get="/api/carreras/options"
+                hx-trigger="load"
+                hx-target="#carreraId"
+                hx-swap="innerHTML"
+                th:attr="data-selected-id=${visita.carrera.id}">
+            <option value="" disabled selected>Cargando carreras...</option>
+        </select>
+
+        <br>
+
+        <button type="submit" class="btn btn-success w-100 py-2">
+            Actualizar
+        </button>
+
+    </form>
+</div>
+
+<script>
+    document.body.addEventListener("htmx:afterSwap", function (e) {
+        if (e.target.id === "carreraId") {
+            const select = e.target;
+            const selectedId = select.getAttribute("data-selected-id");
+            if (selectedId) {
+                select.value = selectedId;
+            }
+        }
+    });
+</script>
+    

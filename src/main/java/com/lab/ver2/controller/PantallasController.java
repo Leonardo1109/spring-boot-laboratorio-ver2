@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lab.ver2.service.EquipoService;
+import com.lab.ver2.service.VisitaService;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class PantallasController {
 
     private final EquipoService equipoService;
+    private final VisitaService visitaService;
 
     @GetMapping
     public String home() {
@@ -24,12 +26,12 @@ public class PantallasController {
 
     @GetMapping("/inicio")
     public String retornoHome() {
-        return "inicio"; // el contenido que se carga en main-content
+        return "inicio"; 
     }
 
-    @GetMapping("/equipos/crear")
+    @GetMapping("/equipos/crear") // ruta
     public String crearEquipoForm() {
-        return "equipos/crear-equipo";
+        return "equipos/crear-equipo"; // HTML
     }
 
     @GetMapping("/equipos/editar")
@@ -50,5 +52,26 @@ public class PantallasController {
         return "equipos/resultados-fragment";
     }
 
+    @GetMapping("/visitas/crear") // ruta
+    public String crearVisitaForm() {
+        return "visitas/crear-visita"; // HTML
+    }
 
+    @GetMapping("/visitas/editar")
+    public String editarVisita(Model model) {
+        model.addAttribute("visitasRecientes", visitaService.getFirst5());
+        return "visitas/editar-visita";
+    }
+
+    @GetMapping("/visitas/form-editar")
+    public String getFormEditarVisitas(@RequestParam Integer id, Model model) {
+        model.addAttribute("visita", visitaService.getVisitaById(id));
+        return "visitas/form-editar-fragment";
+    }
+
+    @GetMapping("/visitas/buscar")
+    public String buscarVisitas(@RequestParam String search, Model model) {
+        model.addAttribute("visitas", visitaService.searchByNCRFC(search));
+        return "visitas/resultados-fragment";
+    }
 }

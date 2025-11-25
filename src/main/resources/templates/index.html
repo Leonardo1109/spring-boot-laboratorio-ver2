@@ -68,6 +68,20 @@
             Asistencia JSON
         </a>
 
+        <button class="btn btn-outline-light mb-2"
+                hx-get="/pantallas/visitas/crear"
+                hx-target="#main-content"
+                hx-swap="innerHTML">
+            Crear Visita
+        </button>
+
+        <button class="btn btn-outline-light mb-2"
+                hx-get="/pantallas/visitas/editar"
+                hx-target="#main-content"
+                hx-swap="innerHTML">
+            Editar Visita
+        </button>
+
         <a href="/api/visitas" target="_blank" class="btn btn-outline-light mb-2">
             Visita JSON
         </a>

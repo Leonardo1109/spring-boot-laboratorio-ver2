@@ -29,13 +29,23 @@ public class VisitaController {
         return ResponseEntity.ok(visitaService.getVisitaById(id));
     }
 
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<VisitaGetDTO> createVisitaJson(@Valid @RequestBody VisitaPostDTO dto){
+        return ResponseEntity.ok(visitaService.createVisita(dto));
+    }
+
     @PostMapping
-    public ResponseEntity<VisitaGetDTO> createVisita(@Valid @RequestBody VisitaPostDTO dto){
+    public ResponseEntity<VisitaGetDTO> createVisitaForm(@Valid @ModelAttribute VisitaPostDTO dto){
         return ResponseEntity.ok(visitaService.createVisita(dto));
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<VisitaGetDTO> updateVisita(@Valid @RequestBody VisitaPostDTO dto, @PathVariable Integer id){
+    @PutMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<VisitaGetDTO> updateVisitaJson(@Valid @RequestBody VisitaPostDTO dto, @PathVariable Integer id){
+        return ResponseEntity.ok(visitaService.updateVisita(dto, id));
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<VisitaGetDTO> updateVisitaForm(@Valid @ModelAttribute VisitaPostDTO dto, @PathVariable Integer id){
         return ResponseEntity.ok(visitaService.updateVisita(dto, id));
     }
 
