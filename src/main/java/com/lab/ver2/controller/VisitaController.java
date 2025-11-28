@@ -55,4 +55,37 @@ public class VisitaController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
+    public String buscarResponsables(@RequestParam("texto") String texto) {
+
+        if (texto == null || texto.isBlank()) {
+            return "<div class='text-muted'>Escribe un RFC o Número de Cuenta...</div>";
+        }
+
+        var resultados = visitaService.searchByNCRFC(texto);
+
+        if (resultados.isEmpty()) {
+            return "<div class='text-danger'>No se encontraron resultados.</div>";
+        }
+
+        StringBuilder html = new StringBuilder("<div>");
+
+        for (var v : resultados) {
+            html.append(
+                "<label class='d-flex align-items-center mb-2 p-2 border rounded shadow-sm w-100'>" +
+                    "<input type='checkbox' class='form-check-input me-3' " +
+                        "name='visitasIds' value='" + v.getId() + "'>" +
+                    "<span class='text-truncate'>" + 
+                        v.getNoCuentaRFC() + " — " + v.getNombre() +
+                    "</span>" +
+                "</label>"
+            );            
+        }
+
+        html.append("</div>");
+        return html.toString();
+    }
+
+
+
 }

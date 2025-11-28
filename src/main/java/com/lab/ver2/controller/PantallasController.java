@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lab.ver2.service.EquipoService;
+import com.lab.ver2.service.ProyectoService;
 import com.lab.ver2.service.VisitaService;
 
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ public class PantallasController {
 
     private final EquipoService equipoService;
     private final VisitaService visitaService;
+    private final ProyectoService proyectoService;
 
     @GetMapping
     public String home() {
@@ -74,4 +76,28 @@ public class PantallasController {
         model.addAttribute("visitas", visitaService.searchByNCRFC(search));
         return "visitas/resultados-fragment";
     }
+
+    @GetMapping("/proyectos/crear") 
+    public String crearProyectoForm() {
+        return "proyectos/crear-proyecto";
+    }
+
+    @GetMapping("/proyectos/editar")
+    public String editarProyecto(Model model) {
+        model.addAttribute("proyectosRecientes", proyectoService.getFirst5());
+        return "proyectos/editar-proyecto";
+    }
+
+    @GetMapping("/proyectos/form-editar")
+    public String getFormEditarProyectos(@RequestParam Integer id, Model model) {
+        model.addAttribute("proyecto", proyectoService.getProyectoById(id));
+        return "proyectos/form-editar-fragment";
+    }
+
+    @GetMapping("/proyectos/buscar")
+    public String buscarProyectos(@RequestParam String search, Model model) {
+        model.addAttribute("proyectos", proyectoService.searchByClave(search));
+        return "proyectos/resultados-fragment";
+    }
+
 }

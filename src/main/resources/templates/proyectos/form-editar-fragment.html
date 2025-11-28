@@ -1,0 +1,359 @@
+<div class="mt-4">
+
+    <h4 class="mb-3">Editar Proyecto: [[${proyecto.clave}]]</h4>
+
+    <form 
+        th:hx-put="@{/api/proyectos/{id}(id=${proyecto.id})}"
+        hx-swap="none"
+        hx-on::after-request="
+            if (event.detail.successful && event.detail.elt === this && event.detail.xhr && event.detail.xhr.status === 200) {
+                alert('Visita actualizada correctamente');
+                htmx.ajax('GET', '/pantallas/proyectos/editar', '#main-content');
+            }
+        "
+    >
+
+        <!-- NOMBRE -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input type="text" name="nombre" class="form-control"
+                   minlength="5" maxlength="150" required
+                   th:value="${proyecto.nombre}">
+        </div>
+
+        <!-- DESCRIPCION -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción</label>
+            <textarea name="descripcion" class="form-control"
+                      minlength="5" required>[[${proyecto.descripcion}]]</textarea>
+        </div>
+
+        <!-- OBJETIVOS -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Objetivos</label>
+            <textarea name="objetivos" class="form-control"
+                      minlength="5" required>[[${proyecto.objetivos}]]</textarea>
+        </div>
+
+        <!-- CLAVE -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Clave</label>
+            <input type="text" name="clave" class="form-control"
+                   minlength="5" maxlength="30" required
+                   th:value="${proyecto.clave}">
+        </div>
+
+        <!-- RESPONSABLES -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold text-primary">Responsables</label>
+
+            <div class="input-group shadow-sm rounded-3 mb-2">
+                <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-search"></i>
+                </span>
+
+                <input type="text"
+                       class="form-control"
+                       placeholder="Buscar por RFC o Numero de Cuenta..."
+                       name="texto"
+                       hx-get="/api/visitas/buscar"
+                       hx-target="#lista-responsables"
+                       hx-trigger="keyup changed delay:300ms"
+                       hx-include="this"
+                       hx-swap="innerHTML">
+            </div>
+
+            <div id="lista-responsables" class="border rounded p-3 small text-muted">
+                Escribe un RFC o Numero de Cuenta para buscar responsables...
+            </div>
+            <h6 class="fw-bold mb-2">Responsables seleccionados:</h6>
+            <div id="responsables-seleccionados" class="mt-3 p-3 border rounded bg-light"></div>
+
+            <!-- Contenedor para los inputs hidden -->
+            <div id="visitas-hidden-container"></div>
+        </div>
+
+        <!-- CARRERAS -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Carreras</label>
+
+            <div id="carreras-container"
+                 class="row"
+                 hx-get="/api/carreras/options-checkbox"
+                 hx-trigger="load"
+                 hx-target="#carreras-container"
+                 hx-swap="innerHTML"
+                 th:data-carreras-json="${proyecto.carreras.![id]}">
+                 <div class="text-muted">Cargando carreras...</div>
+            </div>
+        </div>
+
+        <!-- ACTIVIDADES -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold text-primary">Actividades</label>
+
+            <div id="actividades-container">
+
+                <th:block th:each="a, iStat : ${proyecto.actividades}">
+                    <div class="card p-3 shadow-sm mb-3" th:id="'actividad-' + ${iStat.index}">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea class="form-control"
+                                      th:name="'actividades[' + ${iStat.index} + '].descripcion'"
+                                      minlength="5"
+                                      required>[[${a.descripcion}]]</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Horas</label>
+                            <input type="number"
+                                   class="form-control"
+                                   th:name="'actividades[' + ${iStat.index} + '].horas'"
+                                   min="1"
+                                   th:value="${a.horas}"
+                                   required>
+                        </div>
+
+                        <button type="button"
+                            class="btn btn-danger"
+                            onclick="this.closest('.card').remove()">        
+                            <i class="bi bi-x-circle"></i> Eliminar actividad
+                        </button>
+                    </div>
+                </th:block>
+
+            </div>
+
+            <button type="button"
+                    class="btn btn-outline-primary mt-2"
+                    onclick="agregarActividad()">
+                <i class="bi bi-plus-circle"></i> Agregar actividad
+            </button>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 py-2">
+            Actualizar Proyecto
+        </button>
+
+    </form>
+</div>
+   
+
+<script th:inline="javascript">
+
+
+    // =====================================
+    // CARRERAS
+    // =====================================
+
+    document.body.addEventListener("htmx:afterSwap", function (e) {
+        if (e.detail.target.id === "carreras-container") {
+            const seleccionadas = JSON.parse(
+                document.getElementById("carreras-container")
+                .getAttribute("data-carreras-json")
+            );
+
+            seleccionadas.forEach(id => {
+                const chk = document.querySelector(
+                    `#carreras-container input[value='${id}']`
+                );
+                if (chk) chk.checked = true;
+            });
+        }
+    });
+
+    // =====================================
+    // ACTIVIDADES
+    // =====================================
+
+    window.indexActividad = (typeof window.indexActividad !== "undefined")
+                        ? window.indexActividad
+                        : document.querySelectorAll("[id^='actividad-']").length || 0;
+
+
+    function agregarActividad() {
+        const cont = document.getElementById("actividades-container");
+
+        const html = `
+            <div class="card p-3 shadow-sm mb-3" id="actividad-${indexActividad}">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Descripción</label>
+                    <textarea class="form-control"
+                              name="actividades[${indexActividad}].descripcion"
+                              minlength="5" maxlength="200"
+                              required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Horas</label>
+                    <input type="number"
+                           class="form-control"
+                           name="actividades[${indexActividad}].horas"
+                           min="1"
+                           required>
+                </div>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        onclick="document.getElementById('actividad-${indexActividad}').remove()">
+                    <i class="bi bi-x-circle"></i> Eliminar actividad
+                </button>
+
+            </div>
+        `;
+
+        cont.insertAdjacentHTML("beforeend", html);
+
+        indexActividad++;
+    }
+
+
+    // ===============================
+    // VISITAS
+    // ===============================
+    // estado global
+    
+    window.visitasSeleccionadas = window.visitasSeleccionadas || new Map();
+
+    (() => {
+        // Array de visitas que viene del servidor
+        var preset = /*[[${proyecto.visitas}]]*/ [];
+
+        // Inicializamos el Map global si no existe
+        //window.visitasSeleccionadas = window.visitasSeleccionadas || new Map();
+        window.visitasSeleccionadas = new Map();
+
+        // Agregamos cada visita al Map usando id como clave
+        preset.forEach(v => window.visitasSeleccionadas.set(v.id, v));
+
+        // Logueamos para ver qué hay
+        console.log("Set ahora:", Array.from(window.visitasSeleccionadas.values()));
+
+        // Renderizamos badges
+        renderVisitasSeleccionadas();
+    })();
+
+    function quitarVisita(id) {
+        // Eliminar del Map usando id como clave
+        window.visitasSeleccionadas.delete(id);
+
+        // Renderizar badges actualizados
+        renderVisitasSeleccionadas();
+        console.log("Set ahora:", Array.from(window.visitasSeleccionadas.values()));
+    }
+
+    // ===============================
+    // Renderizar badges seleccionados
+    // ===============================
+
+    function renderVisitasSeleccionadas() {
+        const cont = document.getElementById("responsables-seleccionados");
+        cont.innerHTML = "";
+
+        if (visitasSeleccionadas.size === 0) {
+            cont.innerHTML = `<div class="text-muted fst-italic">No hay responsables seleccionados.</div>`;
+            return;
+        }
+
+        visitasSeleccionadas.forEach(v => {
+            const html = `
+                <div class="d-inline-flex align-items-center bg-primary text-white rounded-pill px-3 py-1 me-2 mb-2 shadow-sm" style="font-size: 0.875rem;">
+                    <div>
+                        ${v.nombre} - ${v.noCuentaRFC} 
+                    </div>
+                    <button type="button" 
+                            onclick="quitarVisita(${v.id})" 
+                            class="btn-close btn-close-white btn-sm ms-2"
+                            aria-label="Quitar"></button>
+                </div>
+            `;
+            cont.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    // ==========================
+    // GREGAR EL CHECK AL MAP
+    // ==========================
+
+    document.body.addEventListener("change", function(e) {
+        if (e.target.name === "visitasIds") {
+            const id = Number(e.target.value);
+            const labelText = e.target.closest("label").innerText.trim();
+
+            if (e.target.checked) {
+                // Crear objeto similar al que viene del backend
+                const visitaObj = {
+                    id: id,
+                    nombre: labelText.split(" — ")[1] || labelText, // separa el nombre del noCuentaRFC
+                    noCuentaRFC: labelText.split(" — ")[0] || ""
+                };
+
+                // Guardarlo en el Map global
+                window.visitasSeleccionadas.set(id, visitaObj);
+            } else {
+                // Desmarcar
+                window.visitasSeleccionadas.delete(id);
+            }
+            console.log(Array.from(window.visitasSeleccionadas.values()));
+            renderVisitasSeleccionadas();
+        }
+    });
+
+    document.body.addEventListener("htmx:afterSwap", function(evt) {
+        if (evt.detail.target.id === "lista-responsables") {
+            // Marcar los checkboxes que ya están seleccionados
+            window.visitasSeleccionadas.forEach((v, id) => {
+                const cb = document.querySelector(`#lista-responsables input[value='${id}']`);
+                if (cb) cb.checked = true;
+            });
+        }
+    });
+
+    function syncHiddenInput() {
+        const container = document.getElementById("visitas-hidden-container");
+        container.innerHTML = ""; // limpiar SIEMPRE
+
+        Array.from(window.visitasSeleccionadas.values()).forEach(v => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "visitasIds";
+            input.value = v.id;
+            container.appendChild(input);
+        });
+
+        console.log("IDs enviando:", Array.from(window.visitasSeleccionadas.values()).map(v => v.id));
+    }
+    
+    document.body.addEventListener("htmx:beforeRequest", function (e) {
+
+        // Obtener el formulario real, aunque el evento no venga de él
+        const form = e.detail.elt.closest("form");
+
+        if (!form) return;
+
+        syncHiddenInput(); // <-- SIEMPRE ANTES DEL ENVÍO
+    });
+
+
+document.body.addEventListener("htmx:beforeRequest", function (e) {
+    const form = e.detail.elt;
+
+    // Asegurar que es el <form>
+    if (!form || form.tagName !== "FORM") return;
+
+    console.log("📌 FORM ENVIADO A:", e.detail.path);
+
+    const fd = new FormData(form);
+
+    console.log("📌 FORM DATA ENVIADO:");
+    for (const [key, val] of fd.entries()) {
+        console.log(key, "=", val);
+    }
+
+    console.log("👉 QUERY STRING EXACTA:");
+    console.log(new URLSearchParams(fd).toString());
+});
+
+
+</script>

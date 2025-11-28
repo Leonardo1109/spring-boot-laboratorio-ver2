@@ -28,13 +28,23 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoService.getProyectoById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ProyectoGetDTO> createProyecto(@RequestBody ProyectoPostDTO dto){
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<ProyectoGetDTO> createProyectoJson(@Valid @RequestBody ProyectoPostDTO dto){
         return ResponseEntity.ok(proyectoService.createProyecto(dto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProyectoGetDTO> updateProyecto(@Valid @RequestBody ProyectoPostDTO dto, @PathVariable Integer id){
+    @PostMapping()
+    public ResponseEntity<ProyectoGetDTO> createProyectoForm(@Valid @ModelAttribute ProyectoPostDTO dto){
+        return ResponseEntity.ok(proyectoService.createProyecto(dto));
+    }
+
+    @PutMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<ProyectoGetDTO> updateProyectoJson(@Valid @RequestBody ProyectoPostDTO dto, @PathVariable Integer id){
+        return ResponseEntity.ok(proyectoService.updateProyecto(dto, id));
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProyectoGetDTO> updateProyectoForm(@Valid @ModelAttribute ProyectoPostDTO dto, @PathVariable Integer id){
         return ResponseEntity.ok(proyectoService.updateProyecto(dto, id));
     }
     

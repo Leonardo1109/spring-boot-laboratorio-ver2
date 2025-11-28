@@ -1,5 +1,4 @@
 package com.lab.ver2.service;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,26 +21,26 @@ public class VisitaService {
     private final CarreraRepository carreraRepository;
 
     @Transactional
-    public List<VisitaGetDTO> getAllVisitas(){
+    public List<VisitaGetDTO> getAllVisitas() {
         return visitaMapper.toDtos(visitaRepository.findAll());
     }
 
     @Transactional
-    public VisitaGetDTO getVisitaById(Integer id){
+    public VisitaGetDTO getVisitaById(Integer id) {
         return visitaMapper.toDto(visitaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Visita no encontrada")));
+                .orElseThrow(() -> new RuntimeException("Visita no encontrada")));
     }
 
     @Transactional
-    public VisitaGetDTO createVisita(VisitaPostDTO dto){
+    public VisitaGetDTO createVisita(VisitaPostDTO dto) {
         Visita visita = visitaMapper.toVisita(dto);
 
         // rol y carrera
         Rol rol = rolRepository.findById(dto.getRolId())
-            .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         Carrera carrera = carreraRepository.findById(dto.getCarreraId())
-            .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
 
         visita.setRol(rol);
         visita.setCarrera(carrera);
@@ -51,16 +50,16 @@ public class VisitaService {
     }
 
     @Transactional
-    public VisitaGetDTO updateVisita(VisitaPostDTO dto, Integer id){
+    public VisitaGetDTO updateVisita(VisitaPostDTO dto, Integer id) {
         Visita visita = visitaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Visita no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Visita no encontrada"));
 
-        //  Rol y carrera 
+        // Rol y carrera
         Rol rol = rolRepository.findById(dto.getRolId())
-            .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         Carrera carrera = carreraRepository.findById(dto.getCarreraId())
-            .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
 
         visita.setNoCuentaRFC(dto.getNoCuentaRFC());
         visita.setNombre(dto.getNombre());
@@ -75,7 +74,7 @@ public class VisitaService {
     }
 
     @Transactional
-    public void deleteVisita(Integer id){
+    public void deleteVisita(Integer id) {
         if (!visitaRepository.existsById(id)) {
             throw new RuntimeException("Visita no encontrada");
         }
@@ -84,11 +83,17 @@ public class VisitaService {
 
     public List<VisitaGetDTO> searchByNCRFC(String texto) {
         return visitaMapper.toDtos(
-            visitaRepository.findByNoCuentaRFCContainingIgnoreCase(texto));
+                visitaRepository.findByNoCuentaRFCContainingIgnoreCase(texto));
     }
 
     public List<Visita> getFirst5() {
         return visitaRepository.findTop5ByOrderByIdDesc();
     }
 
+    public List<VisitaGetDTO> getVisitasByProyecto(Integer id){        
+        return visitaMapper.toDtos(
+            visitaRepository.findByProyectos_Id(id)
+        );
+    }
+    
 }

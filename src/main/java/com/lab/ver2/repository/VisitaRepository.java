@@ -11,4 +11,5 @@ import com.lab.ver2.model.Visita;
 public interface VisitaRepository extends JpaRepository<Visita, Integer>{
     List<Visita> findByNoCuentaRFCContainingIgnoreCase(String noCuentaRFC);
     List<Visita> findTop5ByOrderByIdDesc();
+    List<Visita> findByProyectos_Id(Integer proyectoId);
 }

@@ -30,5 +30,21 @@ public class CarreraController {
                 .reduce("", String::concat);
     }
 
+    @GetMapping("/options-checkbox")
+    public String getCarreraCheckboxes() {
+        return 
+            "<div class='d-flex flex-column overflow-hidden'>" + 
+            carreraRepository.findAll().stream()
+                .map(c -> 
+                    "<label class='d-flex align-items-center mb-2 p-2 border rounded shadow-sm w-auto'>" +
+                        "<input type='checkbox' class='form-check-input me-3' name='carrerasIds' value='" + c.getId() + "'>" +
+                        "<span class='text-truncate'>" + c.getNombre() + "</span>" +
+                    "</label>"
+                )
+                .reduce("", String::concat)
+            + "</div>";
+    }
+
+
 }
 

@@ -1,0 +1,22 @@
+<div>
+    <ul class="list-group">
+        <li class="list-group-item fw-bold text-primary">Resultados</li>
+
+        <th:block th:if="${#lists.isEmpty(proyectos)}">
+            <li class="list-group-item text-muted">Sin resultados...</li>
+        </th:block>
+
+        <th:block th:each="p : ${proyectos}">
+            <li class="list-group-item">
+                <button 
+                    class="btn btn-link"
+                    th:hx-get="@{/pantallas/proyectos/form-editar(id=${p.id})}"
+                    hx-target="#form-editar"
+                    hx-swap="innerHTML">
+                    [[${p.clave}]] (ID [[${p.id}]])
+                </button>
+
+            </li>
+        </th:block>
+    </ul>
+</div>

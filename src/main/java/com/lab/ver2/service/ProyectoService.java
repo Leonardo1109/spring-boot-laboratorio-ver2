@@ -88,4 +88,12 @@ public class ProyectoService {
         }
         proyectoRepository.deleteById(id);;
     }
+
+    public List<ProyectoGetDTO> getFirst5(){
+        return proyectoMapper.toDtos(proyectoRepository.findTop5ByOrderByIdDesc());
+    }
+
+    public List<ProyectoGetDTO> searchByClave(String clave){
+        return proyectoMapper.toDtos(proyectoRepository.findByClaveContainingIgnoreCase(clave));
+    }
 }
