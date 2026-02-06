@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lab.ver2.dto.EquipoGetDTO;
 import com.lab.ver2.service.EquipoService;
 import com.lab.ver2.service.ProyectoService;
 import com.lab.ver2.service.VisitaService;
@@ -100,4 +101,22 @@ public class PantallasController {
         return "proyectos/resultados-fragment";
     }
 
+    @GetMapping("/asistencias/principal")
+    public String principalAsistencias() {
+        return "/asistencias/principal-asistencias";
+    }
+
+    @GetMapping("/asistencias/cambiar-estado")
+    public String cambiarEstadoAsistencias(@RequestParam Integer id, Model model) {
+        EquipoGetDTO equipo = equipoService.getEquipoById(id);
+
+        model.addAttribute("equipo", equipo);
+        return "asistencias/cambiar-estado-asistencias";
+    }
+
+    @GetMapping("/asistencias/registrar")
+    public String registrarAsistencias(@RequestParam(required = false) Integer id, Model model) {
+        model.addAttribute("idEquipo", id);
+        return "/asistencias/registrar-asistencia"; 
+    }
 }

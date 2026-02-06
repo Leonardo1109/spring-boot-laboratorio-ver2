@@ -6,14 +6,14 @@
             <li class="list-group-item text-muted">Sin resultados...</li>
         </th:block>
 
-        <th:block th:each="v : ${visitas}">
+        <th:block th:each="e : ${equipos}">
             <li class="list-group-item">
                 <button 
                     class="btn btn-link"
-                    th:hx-get="@{/pantallas/visitas/form-editar(id=${v.id})}"
+                    th:hx-get="@{/pantallas/equipos/form-editar(id=${e.id})}"
                     hx-target="#form-editar"
                     hx-swap="innerHTML">
-                    [[${v.noCuentaRFC}]] (ID [[${e.id}]])
+                    [[${e.descripcion}]] (ID [[${e.id}]])
                 </button>
 
             </li>

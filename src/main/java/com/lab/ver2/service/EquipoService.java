@@ -88,6 +88,20 @@ public class EquipoService {
     public List<Equipo> getFirst5() {
         return equipoRepository.findTop5ByOrderByIdDesc();
     }
-    
+
+    // cambiar estado
+    @Transactional
+    public EquipoGetDTO cambiarEstatus(Integer equipoId, Integer estatusId) {
+
+        Equipo equipo = equipoRepository.findById(equipoId)
+            .orElseThrow(() -> new RuntimeException("Equipo no encontrado"));
+
+        Estatus estatus = estatusRepository.findById(estatusId)
+            .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
+
+        equipo.setEstatus(estatus);
+
+        return equipoMapper.toDto(equipoRepository.save(equipo));
+    }
     
 }

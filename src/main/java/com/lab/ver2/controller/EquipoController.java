@@ -61,5 +61,14 @@ public class EquipoController {
         equipoService.deleteEquipo(id);
         return ResponseEntity.noContent().build();
     }
-    
+
+    // cambiar estado
+    @PatchMapping("/estatus")
+    public ResponseEntity<EquipoGetDTO> cambiarEstatus(
+            @RequestParam Integer equipoId,
+            @RequestParam Integer estatusId) {
+
+    equipoService.cambiarEstatus(equipoId, estatusId);
+    return ResponseEntity.noContent().build();
+    }
 }

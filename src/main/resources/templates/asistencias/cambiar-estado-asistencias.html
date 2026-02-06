@@ -1,0 +1,48 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Equipo #<span th:text="${equipo.id}"></span></h5>
+
+        <p class="mb-1">
+            <strong>Código:</strong>
+            <span th:text="${equipo.codigoInventario}"></span>
+        </p>
+
+        <p class="mb-1">
+            <strong>Descripción:</strong>
+            <span th:text="${equipo.descripcion}"></span>
+        </p>
+
+        <p class="mb-1">
+            <strong>Ubicación:</strong>
+            <span th:text="${equipo.ubicacion}"></span>
+        </p>
+
+        <p class="mb-0">
+            <strong>Estado actual:</strong>
+            <span class="badge bg-secondary"
+                  th:text="${equipo.estatus.descripcion}">
+            </span>
+        </p>
+    </div>
+</div>
+<form
+    hx-patch="/api/equipos/estatus"
+    hx-on="htmx:afterRequest:
+           htmx.ajax('GET',
+                     '/pantallas/asistencias/principal',
+                     { target: '#main-content', swap: 'innerHTML' })">
+
+    <input type="hidden" name="equipoId" th:value="${equipo.id}">
+
+    <select name="estatusId" class="form-select" required>
+        <option value="1">Disponible</option>
+        <option value="2">En uso</option>
+        <option value="3">Reservado</option>
+        <option value="5">En mantenimiento</option>
+        <option value="4">Fuera de servicio</option>
+    </select>
+
+    <button class="btn btn-primary mt-3">
+        Guardar cambios
+    </button>
+</form>
