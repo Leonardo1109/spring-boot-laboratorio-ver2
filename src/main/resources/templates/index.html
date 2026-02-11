@@ -234,7 +234,312 @@
 
     }
 
+    class AsistenciaActivaPage {
 
+        static cargar() {
+            const root = document.querySelector('[data-page="asistencia-activa"]');
+            if (!root) return;
+
+            const equipoId = this.obtenerEquipoId();
+            if (!equipoId) {
+                console.warn('No se encontró id de equipo en la URL');
+                return;
+            }
+
+            this.cargarAsistenciaActiva(equipoId);
+        }
+
+        static obtenerEquipoId() {
+            const root = document.querySelector('[data-page="asistencia-activa"]');
+            return root?.dataset.equipoId ?? null;
+        }
+
+        static cargarAsistenciaActiva(equipoId) {
+            fetch(`/api/asistencias/equipo/${equipoId}/activa`)
+                .then(async r => {
+                    if (r.status === 204) return null;
+                    if (!r.ok) throw new Error('Error HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    this.renderizarAsistencia(data, equipoId);
+                })
+                .catch(err => {
+                    console.error('Error cargando asistencia activa', err);
+                    this.asistenciaActual = null;
+                    this.renderizarFormulario(null, equipoId);
+                });
+        }
+
+        static renderizarAsistencia(a, equipoId) {
+            this.asistenciaActual = a ?? null;
+            this.renderHoras(a);
+            this.renderDashboardVisita(a);
+            this.renderDashboardProyecto(a);
+            this.renderFormulario(a, equipoId);
+        }
+
+        static renderHoras(a) {
+            const cont = document.getElementById('asistencia-horas');
+            if (!cont) return;
+
+            const entrada = a?.horaEntrada ?? '';
+            const salida = a?.horaSalida ?? '';
+            const estatusActual = a?.equipo?.estatus?.id ?? '';
+            const sinAsistencia = !a;
+
+            cont.innerHTML = `
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Horario</h5>
+
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Hora de entrada</label>
+                                <input type="datetime-local" class="form-control"
+                                    value="${this.toInputDate(entrada)}"
+                                    ${estatusActual === 2 ? 'readonly' : ''}>
+                            </div>
+
+                            <div class="col">
+                                <label class="form-label">Hora de salida</label>
+                                <input type="datetime-local" class="form-control"
+                                    value="${this.toInputDate(salida)}"
+                                    ${!a ? 'readonly' : ''}>
+                                <p>Estatus actual: ${estatusActual ?? 'sin asistencia'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        static renderDashboardVisita(a) {
+            const cont = document.getElementById('dashboard-visita');
+            if (!cont) return;
+
+            const visita = a?.visita;
+            if (!visita) {
+                cont.innerHTML = `<p class="text-muted">Sin visita asignada</p>`;
+                return;
+            }
+
+            cont.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Visita actual</h5>
+                        <p><strong>Nombre:</strong> ${visita.nombre} ${visita.apellidoPaterno} ${visita.apellidoMaterno}</p>
+                        <p><strong>Numero de cuenta o RFC:</strong> ${visita.noCuentaRFC}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        static onVisitaSeleccionada(visitaId) {
+            fetch(`/api/visitas/${visitaId}`)
+                .then(r => r.json())
+                .then(visita => {
+                    this.visitaSeleccionada = visita;
+
+                    this.renderDashboardVisita({ visita });
+
+                    const input = document.querySelector('input[name="visitaId"]');
+                    if (input) input.value = visita.id;
+                })
+                .catch(err => console.error('Error cargando visita', err));
+        }
+
+        static renderDashboardProyecto(a) {
+            const cont = document.getElementById('dashboard-proyecto');
+            if (!cont) return;
+
+            const act = a?.actividad;
+            if (!act) {
+                cont.innerHTML = `<p class="text-muted">Sin actividad seleccionada</p>`;
+                return;
+            }
+
+            cont.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Actividad seleccionada</h5>
+                        <p><strong>Descripción:</strong> ${act.descripcion}</p>
+                        <p><strong>Horas:</strong> ${act.horas}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        static onProyectoSeleccionado(proyectoId) {
+            fetch(`/api/proyectos/${proyectoId}`)
+                .then(r => r.json())
+                .then(proyecto => {
+                    this.proyectoSeleccionado = proyecto;
+                    this.actividadSeleccionada = null;
+
+                    this.renderSelectorActividades(proyecto.actividades);
+                    this.renderDashboardProyecto(null);
+
+                    const inputProyecto = document.querySelector('input[name="proyectoId"]');
+                    if (inputProyecto) inputProyecto.value = proyecto.id;
+                })
+                .catch(err => console.error('Error cargando proyecto', err));
+        }
+
+        static renderSelectorActividades(actividades) {
+            const cont = document.getElementById('selector-actividad');
+            if (!cont) return;
+
+            if (!actividades || actividades.length === 0) {
+                cont.innerHTML = `<p class="text-muted">Proyecto sin actividades</p>`;
+                return;
+            }
+
+            cont.innerHTML = `
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Seleccionar actividad</h5>
+
+                        <select id="actividad-select" class="form-select">
+                            <option value="">-- Selecciona una actividad --</option>
+                            ${actividades.map(a => `
+                                <option value="${a.id}">
+                                    ${a.descripcion} (${a.horas} h)
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+
+            document
+                .getElementById('actividad-select')
+                .addEventListener('change', e => {
+                    const actId = e.target.value;
+                    if (!actId) return;
+
+                    const act = actividades.find(a => a.id == actId);
+                    this.onActividadSeleccionada(act);
+                });
+        }
+
+        static onActividadSeleccionada(actividad) {
+            this.actividadSeleccionada = actividad;
+
+            this.renderDashboardProyecto({ actividad });
+
+            const input = document.querySelector('input[name="actividadId"]');
+            if (input) input.value = actividad.id;
+        }
+
+        static renderFormulario(a, equipoId) {
+            const cont = document.getElementById('asistencia-form');
+            if (!cont) return;
+
+            const observacion = a?.observacion ?? '';
+            const estatusActual = a?.equipo?.estatus?.id ?? '';
+
+            cont.innerHTML = `
+                <form id="form-asistencia" class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Guardar asistencia</h5>
+
+                        <input type="hidden" name="equipoId" value="${equipoId}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <textarea name="observacion"
+                                class="form-control"
+                                minlength="5">${observacion}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Estatus del equipo</label>
+                            <select name="estatusEquipo" class="form-select">
+                                <option value="1" ${estatusActual === 1 ? 'selected' : ''}>Disponible</option>
+                                <option value="2" ${estatusActual === 2 ? 'selected' : ''}>En uso</option>
+                                <option value="3" ${estatusActual === 3 ? 'selected' : ''}>Reservado</option>
+                                <option value="5" ${estatusActual === 5 ? 'selected' : ''}>En mantenimiento</option>
+                                <option value="4" ${estatusActual === 4 ? 'selected' : ''}>Fuera de servicio</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Guardar asistencia
+                        </button>
+                    </div>
+                </form>
+            `;
+
+            document
+                .getElementById('form-asistencia')
+                .addEventListener('submit', e => {
+                    e.preventDefault();
+                    this.guardarAsistencia();
+                });
+        }
+
+        static toInputDate(iso) {
+            if (!iso) return '';
+            return iso.substring(0, 16);
+        }
+
+        static guardarAsistencia() {
+
+            const inputsHora = document.querySelectorAll(
+                '#asistencia-horas input[type="datetime-local"]'
+            );
+
+            const estatusEquipo = Number(
+                document.querySelector('[name="estatusEquipo"]')?.value
+            );
+
+
+            const dto = {
+                horaEntrada: inputsHora[0]?.value || null,
+                horaSalida: inputsHora[1]?.value || null,
+                observacion: document.querySelector('[name="observacion"]').value,
+                visitaId: Number(document.querySelector('[name="visitaId"]').value),
+                equipoId: Number(document.querySelector('[name="equipoId"]').value),
+                actividadId: Number(document.querySelector('[name="actividadId"]').value)
+            };
+
+            const asistenciaId = this.asistenciaActual?.id;
+
+            const method = asistenciaId ? 'PUT' : 'POST';
+            const url = asistenciaId
+                ? `/api/asistencias/${asistenciaId}`
+                : `/api/asistencias`;
+
+            fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            })
+            .then(r => {
+                if (!r.ok) throw new Error('Error guardando asistencia');
+                return r.json();
+            })
+            .then(a => {
+                this.asistenciaActual = a;
+
+                return fetch(
+                    `/api/equipos/estatus?equipoId=${dto.equipoId}&estatusId=${estatusEquipo}`,
+                    { method: 'PATCH' }
+                );
+            })
+            .then(() => {
+                htmx.ajax('GET',
+                    '/pantallas/asistencias/principal',
+                    { target: '#main-content', swap: 'innerHTML' }
+                );
+            })
+
+            .catch(err => console.error(err));
+            }
+
+
+    }
 
     // Detecta cuando HTMX swapea la pantalla
     document.body.addEventListener('htmx:afterSwap', function(evt) {
@@ -242,6 +547,46 @@
             if (evt.target.querySelector('[data-page="equipos"]')) {
                 EquiposPage.cargar();
             }
+            if (evt.target.querySelector('[data-page="asistencia-activa"]')) {
+               AsistenciaActivaPage.cargar();
+            }
         }
     });
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[hx-get*="/pantallas/visitas/"]');
+        if (!btn) return;
+
+        const url = btn.getAttribute('hx-get');
+        const params = new URLSearchParams(url.split('?')[1]);
+        const visitaId = params.get('id');
+
+        if (!visitaId) return;
+
+        if (!document.querySelector('[data-page="asistencia-activa"]')) return;
+
+        AsistenciaActivaPage.onVisitaSeleccionada(visitaId);
+    });
+
+    // evento escucha para proyecto/actividad
+    document.addEventListener('click', function (e) {
+        // const btn = e.target.closest('button[hx-get*="/pantallas/proyectos/"]');
+        const btn = e.target.closest('[hx-get*="/pantallas/proyectos/"]');
+
+        if (!btn) return;
+
+        if (!document.querySelector('[data-page="asistencia-activa"]')) return;
+
+        const url = btn.getAttribute('hx-get');
+        const params = new URLSearchParams(url.split('?')[1]);
+        const proyectoId = params.get('id');
+
+        if (!proyectoId) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        AsistenciaActivaPage.onProyectoSeleccionado(proyectoId);
+    });
+
 </script>

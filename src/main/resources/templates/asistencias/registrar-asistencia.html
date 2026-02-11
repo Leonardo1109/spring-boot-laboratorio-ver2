@@ -1,4 +1,120 @@
-<div>
-    <h2>Hola, soy el equipo con id: [[${idEquipo}]]</h2>
-    <p>Aqui se registrará la Asistencias<p>
+<!--
+
+<div class="mb-4">
+    <h2>Equipo #[[${idEquipo}]]</h2>
+    <p class="text-muted">
+        Aquí se gestionará la asistencia activa del equipo
+    </p>
 </div>
+
+<div
+    data-page="asistencia-activa"
+    th:data-equipo-id="${idEquipo}">
+</div>
+
+<!- Aqui debe ir La hora de entrada y salida ->
+
+<!- Aqui debe ir el dashboard para Mostrar a el visitante ->
+
+<!- Barra de busqueda para modificar a la visita ->
+<div class="mb-3">
+    <label class="form-label fw-semibold">Buscar por Numero de Cuenta o RFC</label>
+    <input 
+        type="text" 
+        class="form-control"
+        placeholder="Escribe para buscar..."
+        hx-get="/pantallas/visitas/buscar"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#resultados-visita"
+        name="search"
+    >
+</div>
+
+<div id="resultados-visita"></div>
+
+<!- dashboard para mostrar el proyecto ->
+
+<!- Barra de busqueda para modificar a el proyecto y elegir una actividad ->
+<div class="mb-4">
+    <label class="form-label fw-semibold">Buscar proyecto por clave</label>
+    <input
+        type="text"
+        class="form-control"
+        placeholder="Escribe para buscar..."
+        hx-get="/pantallas/proyectos/buscar"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#resultados-proyecto"
+        name="search">
+</div>
+
+<div id="resultados-proyecto"></div>
+
+<hr>
+
+<div id="asistencia-info"></div>
+
+-->
+<div class="mb-4">
+    <h2>Equipo #[[${idEquipo}]]</h2>
+    <p class="text-muted">
+        Aquí se gestionará la asistencia activa del equipo
+    </p>
+</div>
+
+<div
+    data-page="asistencia-activa"
+    th:data-equipo-id="${idEquipo}">
+</div>
+
+<input type="hidden" name="visitaId" value="${a?.visita?.id ?? ''}">
+<input type="hidden" name="proyectoId">
+<input type="hidden" name="actividadId">
+
+
+<!-- Horas -->
+<div id="asistencia-horas" class="mb-4"></div>
+
+<!-- Dashboard visita -->
+<div id="dashboard-visita" class="mb-4"></div>
+
+<!-- Buscador visita -->
+<div class="mb-3">
+    <label class="form-label fw-semibold">Buscar por Numero de Cuenta o RFC</label>
+    <input 
+        type="text"
+        class="form-control"
+        placeholder="Escribe para buscar..."
+        hx-get="/pantallas/visitas/buscar"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#resultados-visita"
+        name="search">
+</div>
+
+<div id="resultados-visita"></div>
+<div id="form-editar" class="d-none"></div>
+
+<hr>
+
+<!-- Dashboard proyecto -->
+<div id="dashboard-proyecto" class="mb-4"></div>
+<div id="selector-actividad" class="mb-4"></div>
+
+<!-- Buscador proyecto -->
+<div class="mb-4">
+    <label class="form-label fw-semibold">Buscar proyecto por clave</label>
+    <input
+        type="text"
+        class="form-control"
+        placeholder="Escribe para buscar..."
+        hx-get="/pantallas/proyectos/buscar"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#resultados-proyecto"
+        name="search">
+</div>
+
+<div id="resultados-proyecto"></div>
+
+<hr>
+
+<!-- Formulario final -->
+<div id="asistencia-form"></div>

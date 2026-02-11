@@ -1,6 +1,7 @@
 package com.lab.ver2.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,12 @@ public class AsistenciaService {
         return asistenciaMapper.toDto(asistenciaRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Asistencia no encontrada")));
     }
+
+    public Optional<AsistenciaGetDTO> getAsistenciaPorEquipoActivo(Integer id){
+        return asistenciaRepository
+            .findFirstByEquipoIdAndHoraSalidaIsNull(id)
+            .map(asistenciaMapper::toDto);
+    }    
 
     @Transactional
     public AsistenciaGetDTO createAsistencia(AsistenciaPostDTO dto){
@@ -89,4 +96,5 @@ public class AsistenciaService {
         }
         asistenciaRepository.deleteById(id);
     }
+
 }

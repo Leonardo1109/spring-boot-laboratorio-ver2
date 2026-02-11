@@ -11,11 +11,9 @@ import jakarta.validation.constraints.*;
 @Builder
 public class AsistenciaPostDTO {
     
-    @NotNull
     @FutureOrPresent
     private LocalDateTime horaEntrada;
 
-    @NotNull
     @FutureOrPresent
     private LocalDateTime horaSalida;
 

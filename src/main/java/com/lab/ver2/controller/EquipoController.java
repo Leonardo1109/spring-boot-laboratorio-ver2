@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/equipos")
@@ -68,7 +71,17 @@ public class EquipoController {
             @RequestParam Integer equipoId,
             @RequestParam Integer estatusId) {
 
-    equipoService.cambiarEstatus(equipoId, estatusId);
-    return ResponseEntity.noContent().build();
+        equipoService.cambiarEstatus(equipoId, estatusId);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/{idEquipo}/editar-asistencia")
+    public ResponseEntity<Void> editarAsistenciaPorEquipo(
+        @Valid @ModelAttribute AsistenciaPostDTO dtoAsistencia, 
+        @PathVariable Integer idEquipo,
+        @RequestParam Integer idEstatus) {
+        
+        equipoService.editarAsistenciaPorEquipo(dtoAsistencia, idEquipo, idEstatus);
+        return ResponseEntity.noContent().build();
     }
 }

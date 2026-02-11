@@ -1,10 +1,12 @@
 package com.lab.ver2.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
+import com.lab.ver2.mapping.AsistenciaMapper;
 import com.lab.ver2.mapping.EquipoMapper;
 import com.lab.ver2.model.*;
 import com.lab.ver2.repository.*;
@@ -17,9 +19,13 @@ import lombok.RequiredArgsConstructor;
 public class EquipoService {
 
     private final EquipoMapper equipoMapper;
+    private final AsistenciaMapper asistenciaMapper;
     private final EquipoRepository equipoRepository;
     private final EstatusRepository estatusRepository;
     private final TipoEquipoRepository tipoEquipoRepository;
+    private final AsistenciaRepository asistenciaRepository;
+    private final VisitaRepository visitaRepository;
+    private final ActividadRepository actividadRepository;
 
     @Transactional
     public List<EquipoGetDTO> getAllEquipos(){
@@ -102,6 +108,47 @@ public class EquipoService {
         equipo.setEstatus(estatus);
 
         return equipoMapper.toDto(equipoRepository.save(equipo));
+    }
+
+    @Transactional
+    public void editarAsistenciaPorEquipo(AsistenciaPostDTO dto, Integer equipoId, Integer estatusId ){
+        Equipo equipo = equipoRepository.findById(equipoId)
+            .orElseThrow(() -> new RuntimeException("Equipo no encontrado"));
+
+        Estatus estatus = estatusRepository.findById(estatusId)
+            .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
+
+        Optional<Asistencia> asistenciaOpt =
+            asistenciaRepository.findFirstByEquipoIdAndHoraSalidaIsNull(equipoId);
+
+        Visita visita = visitaRepository.findById(dto.getVisitaId())
+            .orElseThrow(() -> new RuntimeException("Visita no encontrada"));
+
+        Actividad actividad = actividadRepository.findById(dto.getActividadId())
+            .orElseThrow(() -> new RuntimeException("Actividad no encontrada"));
+        
+        if (asistenciaOpt.isPresent()) {
+            Asistencia asistencia = asistenciaOpt.get();
+            asistencia.setHoraEntrada(dto.getHoraEntrada());
+            asistencia.setHoraSalida(dto.getHoraSalida());
+            asistencia.setObservacion(dto.getObservacion());
+            asistencia.setVisita(visita);
+            asistencia.setEquipo(equipo);
+            asistencia.setActividad(actividad);
+            
+            asistenciaRepository.save(asistencia);
+        } else {
+            // CREAR nueva asistencia
+            Asistencia asistencia = asistenciaMapper.toAsistencia(dto);
+            asistencia.setVisita(visita);
+            asistencia.setEquipo(equipo);
+            asistencia.setActividad(actividad);
+            asistenciaRepository.save(asistencia);
+        }
+    
+        // ACTUALIZAR estado del equipo (SIEMPRE)
+        equipo.setEstatus(estatus);
+        equipoRepository.save(equipo);
     }
     
 }

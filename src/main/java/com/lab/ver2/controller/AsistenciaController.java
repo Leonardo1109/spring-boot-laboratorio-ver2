@@ -43,5 +43,13 @@ public class AsistenciaController {
         asistenciaService.deleteAsistencia(id);
         return ResponseEntity.noContent().build();
     }
-    
+
+    @GetMapping("/equipo/{id}/activa")
+    public ResponseEntity<AsistenciaGetDTO> asistenciaActiva(@PathVariable Integer id){
+        return asistenciaService
+            .getAsistenciaPorEquipoActivo(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.noContent().build());
+    }
+
 }

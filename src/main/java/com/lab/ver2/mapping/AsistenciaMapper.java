@@ -1,7 +1,6 @@
 package com.lab.ver2.mapping;
 
 import java.util.List;
-
 import org.mapstruct.*;
 
 import com.lab.ver2.dto.*;
