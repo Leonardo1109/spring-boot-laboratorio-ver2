@@ -330,6 +330,7 @@
                         <h5 class="card-title">Visita actual</h5>
                         <p><strong>Nombre:</strong> ${visita.nombre} ${visita.apellidoPaterno} ${visita.apellidoMaterno}</p>
                         <p><strong>Numero de cuenta o RFC:</strong> ${visita.noCuentaRFC}</p>
+                        <p>Id visita ${visita.id}</p>
                     </div>
                 </div>
             `;
@@ -441,6 +442,11 @@
 
             cont.innerHTML = `
                 <form id="form-asistencia" class="card shadow-sm">
+                    <input type="hidden" name="visitaId" value="${a?.visita?.id ?? ''}">
+                    <input type="hidden" name="proyectoId" value="${a?.proyecto?.id ?? ''}">
+                    <input type="hidden" name="actividadId" value="${a?.actividad?.id ?? ''}">
+
+
                     <div class="card-body">
                         <h5 class="card-title">Guardar asistencia</h5>
 
