@@ -16,20 +16,22 @@
             overflow: hidden;
         }
         #sidebar {
-            height: 100vh;
+            /*height: 100vh;*/
             width: 250px;
+            flex-shrink: 0;
         }
         #main-content {
             padding: 20px;
             overflow-y: auto;
-            height: 100vh;
+            /*height: 100vh;*/
+            flex: 1;
         }
     </style>
 </head>
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex vh-100">
 
     <!-- MENU LATERAL -->
     <div id="sidebar" class="bg-dark text-white p-3 d-flex flex-column">
@@ -118,7 +120,7 @@
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <div id="main-content" class="bg-light flex-grow-1">
+    <div id="main-content" class="bg-light">
         <h2>Bienvenido al Proyecto Laboratorio Big Data de la FES Aragon</h2>
         <h2>de la carrera de Ingenieria en Computacion</h2>
         <br>
@@ -438,7 +440,43 @@
             if (!cont) return;
 
             const observacion = a?.observacion ?? '';
-            const estatusActual = a?.equipo?.estatus?.id ?? '';
+            const estatusActual = a?.equipo?.estatus?.id ?? 1;
+
+            console.log("Estatus actual: ", estatusActual);
+
+            const transiciones = {
+                1: [2, 3], // Disponible -> En uso, Reservado
+                2: [1],    // En uso -> Disponible
+                3: [2]     // Reservado -> En uso
+            };
+
+            const estados = {
+                1: 'Disponible',
+                2: 'En uso',
+                3: 'Reservado'
+            };
+
+            const estadosPermitidos = transiciones[estatusActual] ?? [];
+
+            // Generar options dinámicamente
+            const optionsHTML = estadosPermitidos.map(id => `
+                <option value="${id}">
+                    ${estados[id]}
+                </option>
+            `).join('');
+
+            const esDisponible = Number(estatusActual) === 1;
+
+            const botonAccionHTML = esDisponible
+                ? `<button type="button" id="btn-accion-secundaria"
+                    class="btn btn-secondary w-100">
+                        Volver
+                </button>`
+                : `<button type="button" id="btn-accion-secundaria"
+                    class="btn btn-danger w-100">
+                        Eliminar asistencia
+                </button>`;
+
 
             cont.innerHTML = `
                 <form id="form-asistencia" class="card shadow-sm">
@@ -455,24 +493,22 @@
                         <div class="mb-3">
                             <label class="form-label">Observaciones</label>
                             <textarea name="observacion"
-                                class="form-control"
-                                minlength="5">${observacion}</textarea>
+                                class="form-control">${observacion}</textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Estatus del equipo</label>
                             <select name="estatusEquipo" class="form-select">
-                                <option value="1" ${estatusActual === 1 ? 'selected' : ''}>Disponible</option>
-                                <option value="2" ${estatusActual === 2 ? 'selected' : ''}>En uso</option>
-                                <option value="3" ${estatusActual === 3 ? 'selected' : ''}>Reservado</option>
-                                <option value="5" ${estatusActual === 5 ? 'selected' : ''}>En mantenimiento</option>
-                                <option value="4" ${estatusActual === 4 ? 'selected' : ''}>Fuera de servicio</option>
+                                ${optionsHTML}
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
                             Guardar asistencia
                         </button>
+
+                        ${botonAccionHTML}
+
                     </div>
                 </form>
             `;
@@ -483,6 +519,43 @@
                     e.preventDefault();
                     this.guardarAsistencia();
                 });
+                document
+                    .getElementById('btn-accion-secundaria')
+                    ?.addEventListener('click', () => {
+
+                        if (esDisponible) {
+                            htmx.ajax('GET',
+                                '/pantallas/asistencias/principal',
+                                { target: '#main-content', swap: 'innerHTML' }
+                            );
+                            return;
+                        }
+                        
+                        const asistenciaId = this.asistenciaActual?.id;
+                        if (!asistenciaId) return;
+
+                        fetch(`/api/asistencias/${asistenciaId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(r => {
+                            if (!r.ok) throw new Error('Error eliminando asistencia');
+                            return fetch(
+                                `/api/equipos/estatus?equipoId=${equipoId}&estatusId=1`, 
+                                { method: 'PATCH' }
+                            );
+                        })
+                        .then(r => {
+                            if (!r.ok) throw new Error('Error actualizando estatus del equipo');
+                        })
+                        .then(() => {
+                            return htmx.ajax('GET',
+                                '/pantallas/asistencias/principal',
+                                { target: '#main-content', swap: 'innerHTML' }
+                            );
+                        })
+                        .catch(err => console.error(err));
+                    });
+
         }
 
         static toInputDate(iso) {
@@ -543,8 +616,6 @@
 
             .catch(err => console.error(err));
             }
-
-
     }
 
     // Detecta cuando HTMX swapea la pantalla

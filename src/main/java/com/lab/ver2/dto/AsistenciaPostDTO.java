@@ -17,7 +17,6 @@ public class AsistenciaPostDTO {
     @FutureOrPresent
     private LocalDateTime horaSalida;
 
-    @Size(min = 5)
     private String observacion;
 
     @NotNull
