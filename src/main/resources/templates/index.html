@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Pantalla de Inicio</title>
@@ -51,19 +52,21 @@
             Asistencias
         </button>
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/equipos/crear"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Crear Equipo
-        </button>
+        <div sec:authorize="hasRole('ADMIN')">
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/equipos/crear"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Crear Equipo
+            </button>
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/equipos/editar"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Editar Equipo
-        </button>
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/equipos/editar"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Editar Equipo
+            </button>
+        </div>
 
         <!--
         <a href="/api/equipos" target="_blank" class="btn btn-outline-light mb-2">
@@ -71,19 +74,21 @@
         </a>
         -->
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/proyectos/crear"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Crear Proyecto
-        </button>
+        <div sec:authorize="hasRole('ADMIN')">
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/proyectos/crear"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Crear Proyecto
+            </button>
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/proyectos/editar"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Editar Proyecto
-        </button>
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/proyectos/editar"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Editar Proyecto
+            </button>
+        </div>
 
         <!--
         <a href="/api/proyectos" target="_blank" class="btn btn-outline-light mb-2">
@@ -96,19 +101,21 @@
         </a>
         -->
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/visitas/crear"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Crear Visita
-        </button>
+        <div sec:authorize="hasRole('ADMIN')">
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/visitas/crear"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Crear Visita
+            </button>
 
-        <button class="btn btn-outline-light mb-2"
-                hx-get="/pantallas/visitas/editar"
-                hx-target="#main-content"
-                hx-swap="innerHTML">
-            Editar Visita
-        </button>
+            <button class="btn btn-outline-light mb-2 w-100"
+                    hx-get="/pantallas/visitas/editar"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Editar Visita
+            </button>
+        </div>
 
         <!--
         <a href="/api/visitas" target="_blank" class="btn btn-outline-light mb-2">
@@ -116,7 +123,11 @@
         </a>
         -->
         
-        <button class="btn btn-outline-light mb-2">Cerrar sesión</button>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-outline-light mb-2 w-100">
+                Cerrar sesión
+            </button>
+        </form>        
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->

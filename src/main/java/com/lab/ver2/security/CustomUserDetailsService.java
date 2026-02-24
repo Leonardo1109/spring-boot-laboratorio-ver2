@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 usuario.getUserName(),
                 usuario.getPassword(),
-                usuario.isEsAdmin() || true, // enabled
+                true,
                 true,
                 true,
                 true,

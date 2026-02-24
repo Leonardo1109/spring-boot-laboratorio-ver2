@@ -11,4 +11,22 @@ import com.lab.ver2.model.Proyecto;
 public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>{
     List<Proyecto> findTop5ByOrderByIdDesc();
     List<Proyecto> findByClaveContainingIgnoreCase(String clave);
+
+    /*
+    @Query(
+			value = """
+        SELECT a
+        FROM Alumno a
+        WHERE LOWER(a.nombre) LIKE LOWER(CONCAT('%', :texto, '%'))
+           OR LOWER(a.paterno) LIKE LOWER(CONCAT('%', :texto, '%'))
+           OR LOWER(CONCAT(a.nombre, ' ', COALESCE(a.paterno, '')))
+                LIKE LOWER(CONCAT('%', :texto, '%'))
+           OR LOWER(CONCAT(COALESCE(a.paterno, ''), ' ', a.nombre))
+                LIKE LOWER(CONCAT('%', :texto, '%'))
+        """
+	)
+	List<Alumno> buscarPorNombreFlexible(
+			@Param("texto") String texto
+	);
+     */
 }
