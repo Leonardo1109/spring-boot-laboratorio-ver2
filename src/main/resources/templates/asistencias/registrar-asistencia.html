@@ -64,52 +64,52 @@
 <div
     data-page="asistencia-activa"
     th:data-equipo-id="${idEquipo}">
+
+    <!-- Horas -->
+    <div id="asistencia-horas" class="mb-4"></div>
+    <!-- Dashboard visita -->
+    <div id="dashboard-visita" class="mb-4"></div>
+
+    <!-- Buscador visita -->
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Buscar por Numero de Cuenta o RFC</label>
+        <input 
+            type="text"
+            class="form-control"
+            placeholder="Escribe para buscar..."
+            hx-get="/pantallas/visitas/buscar"
+            hx-trigger="keyup changed delay:300ms"
+            hx-target="#resultados-visita"
+            name="search">
+    </div>
+
+    <div id="resultados-visita"></div>
+    <div id="form-editar" class="d-none"></div>
+
+    <hr>
+
+    <!-- Dashboard proyecto -->
+    <div id="dashboard-proyecto" class="mb-4"></div>
+    <div id="selector-actividad" class="mb-4"></div>
+
+    <!-- Buscador proyecto -->
+    <div class="mb-4">
+        <label class="form-label fw-semibold">Buscar proyecto por clave</label>
+        <input
+            type="text"
+            class="form-control"
+            placeholder="Escribe para buscar..."
+            hx-get="/pantallas/proyectos/buscar"
+            hx-trigger="keyup changed delay:300ms"
+            hx-target="#resultados-proyecto"
+            name="search">
+    </div>
+
+    <div id="resultados-proyecto"></div>
+
+    <hr>
+
+    <!-- Formulario final -->
+    <div id="asistencia-form"></div>
+
 </div>
-
-<!-- Horas -->
-<div id="asistencia-horas" class="mb-4"></div>
-
-<!-- Dashboard visita -->
-<div id="dashboard-visita" class="mb-4"></div>
-
-<!-- Buscador visita -->
-<div class="mb-3">
-    <label class="form-label fw-semibold">Buscar por Numero de Cuenta o RFC</label>
-    <input 
-        type="text"
-        class="form-control"
-        placeholder="Escribe para buscar..."
-        hx-get="/pantallas/visitas/buscar"
-        hx-trigger="keyup changed delay:300ms"
-        hx-target="#resultados-visita"
-        name="search">
-</div>
-
-<div id="resultados-visita"></div>
-<div id="form-editar" class="d-none"></div>
-
-<hr>
-
-<!-- Dashboard proyecto -->
-<div id="dashboard-proyecto" class="mb-4"></div>
-<div id="selector-actividad" class="mb-4"></div>
-
-<!-- Buscador proyecto -->
-<div class="mb-4">
-    <label class="form-label fw-semibold">Buscar proyecto por clave</label>
-    <input
-        type="text"
-        class="form-control"
-        placeholder="Escribe para buscar..."
-        hx-get="/pantallas/proyectos/buscar"
-        hx-trigger="keyup changed delay:300ms"
-        hx-target="#resultados-proyecto"
-        name="search">
-</div>
-
-<div id="resultados-proyecto"></div>
-
-<hr>
-
-<!-- Formulario final -->
-<div id="asistencia-form"></div>
