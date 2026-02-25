@@ -2,7 +2,7 @@
     <ul class="list-group">
         <li class="list-group-item fw-bold text-primary">Resultados</li>
 
-        <th:block th:if="${#lists.isEmpty(visitas)}">
+        <th:block th:if="${#lists.isEmpty(equipos)}">
             <li class="list-group-item text-muted">Sin resultados...</li>
         </th:block>
 
@@ -13,7 +13,7 @@
                     th:hx-get="@{/pantallas/equipos/form-editar(id=${e.id})}"
                     hx-target="#form-editar"
                     hx-swap="innerHTML">
-                    [[${e.descripcion}]] (ID [[${e.id}]])
+                    Descripcion: [[${e.descripcion}]] - Ubicacion: [[${e.ubicacion}]] - Codigo Inventario: [[${e.codigoInventario}]]
                 </button>
 
             </li>

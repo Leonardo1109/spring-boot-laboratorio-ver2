@@ -24,7 +24,7 @@ public class PantallasController {
 
     @GetMapping
     public String home() {
-        return "index";  // tu página principal con sidebar
+        return "index";  // página principal con sidebar
     }
 
     @GetMapping("/inicio")
@@ -37,9 +37,11 @@ public class PantallasController {
         return "equipos/crear-equipo"; // HTML
     }
 
+    // Metodo para traer los equipos y depositarlos en una tabla
     @GetMapping("/equipos/editar")
     public String editarEquipo(Model model) {
-        model.addAttribute("equiposRecientes", equipoService.getFirst5());
+        //model.addAttribute("equiposRecientes", equipoService.getF irst5());
+        model.addAttribute("equiposRecientes", equipoService.getAllEquipos());
         return "equipos/editar-equipo";
     }
 
@@ -49,6 +51,7 @@ public class PantallasController {
         return "equipos/form-editar-fragment";
     }
 
+    // Metodo para barra de busqueda del Equipo, despliega las busqeudas en un fragmento
     @GetMapping("/equipos/buscar")
     public String buscarEquipos(@RequestParam String search, Model model) {
         model.addAttribute("equipos", equipoService.searchByDescripcion(search));
