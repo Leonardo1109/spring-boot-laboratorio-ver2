@@ -8,58 +8,89 @@
 
                 <!-- BUSCADOR -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Buscar por descripcion</label>
+                    <label class="form-label fw-semibold">Buscar por Descripcion, Ubicacion o Codigo de Inventario</label>
                     <input 
                         type="text" 
                         class="form-control"
                         placeholder="Escribe para buscar..."
-                        hx-get="/pantallas/equipos/buscar"
-                        hx-trigger="keyup changed delay:300ms"
-                        hx-target="#resultados"
-                        hx-include="[name='search']"
                         name="search"
+                        th:value="${search}"
+                        hx-get="/pantallas/equipos/editar/tabla?page=0"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#tabla-container"
+                        hx-swap="innerHTML"
                     >
                 </div>
 
-                <!-- RESULTADOS -->
-                <div id="resultados"></div>
-
                 <!-- EQUIPOS RECIENTES -->
-                <h5 class="mt-4 mb-3">Últimos equipos registrados</h5>
+                <h5 class="mt-4 mb-3">Resultados:</h5>
 
-                <table class="table table-striped table-bordered">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Descripción</th>
-                            <th>Ubicación</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <th:block th:each="e : ${equiposRecientes}">
+                <div id="tabla-container" th:fragment="tablaContainer">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
                             <tr>
-                                <td>[[${e.id}]]</td>
-                                <td>[[${e.descripcion}]]</td>
-                                <td>[[${e.ubicacion}]]</td>
-                                <td>
-                                    <button 
-                                        class="btn btn-primary btn-sm"
-                                        th:hx-get="@{/pantallas/equipos/form-editar(id=${e.id})}"
-                                        hx-target="#form-editar"
-                                        hx-swap="innerHTML">
-                                        Editar
-                                    </button>
-                                </td>
+                                <th>Codigo Inventario</th>
+                                <th>Descripción</th>
+                                <th>Ubicación</th>
+                                <th>Acciones</th>
                             </tr>
-                        </th:block>
-                    </tbody>
-                </table>
+                        </thead>
 
-                <!-- FORMULARIO DE EDICIÓN (VACÍO AL INICIO) -->
+                        <tbody id="tabla-body">
+                            <th:block th:each="e : ${equiposRecientes}">
+                                <tr>
+                                    <td>[[${e.codigoInventario}]]</td>
+                                    <td>[[${e.descripcion}]]</td>
+                                    <td>[[${e.ubicacion}]]</td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-primary btn-sm"
+                                            th:hx-get="@{/pantallas/equipos/form-editar(id=${e.id})}"
+                                            hx-target="#form-editar"
+                                            hx-swap="innerHTML">
+                                            Editar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination">
+                    
+                            <li th:if="${page.hasPrevious()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/equipos/editar/tabla(page=${page.number - 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Anterior
+                                </button>
+                            </li>
+                    
+                            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                th:classappend="${i == page.number} ? 'active'"
+                                class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/equipos/editar/tabla(page=${i}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML"
+                                th:text="${i + 1}">
+                                </button>
+                            </li>
+                    
+                            <li th:if="${page.hasNext()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/equipos/editar/tabla(page=${page.number + 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Siguiente
+                                </button>
+                            </li>                    
+                        </ul>
+                    </nav>
+                </div>
                 <div id="form-editar"></div>
-
             </div>
         </div>
     </div>

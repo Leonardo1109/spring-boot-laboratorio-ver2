@@ -3,6 +3,8 @@ package com.lab.ver2.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
@@ -86,13 +88,12 @@ public class EquipoService {
     }
 
 
-    public List<EquipoGetDTO> searchByDescripcion(String texto) {
-        return equipoMapper.toDtoList(
-            equipoRepository.findByDescripcionContainingIgnoreCase(texto));
-    }
+    public Page<Equipo> buscarEquipo(String search, Pageable pageable) {
 
-    public List<Equipo> getFirst5() {
-        return equipoRepository.findTop5ByOrderByIdDesc();
+        if (search == null || search.isBlank()) {
+            return equipoRepository.findAll(pageable);
+        }
+        return equipoRepository.search(search, pageable);
     }
 
     // cambiar estado

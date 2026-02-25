@@ -1,11 +1,16 @@
 package com.lab.ver2.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lab.ver2.dto.EquipoGetDTO;
+import com.lab.ver2.model.Equipo;
 import com.lab.ver2.service.EquipoService;
 import com.lab.ver2.service.ProyectoService;
 import com.lab.ver2.service.VisitaService;
@@ -37,25 +42,45 @@ public class PantallasController {
         return "equipos/crear-equipo"; // HTML
     }
 
-    // Metodo para traer los equipos y depositarlos en una tabla
+    // Página completa
     @GetMapping("/equipos/editar")
-    public String editarEquipo(Model model) {
-        //model.addAttribute("equiposRecientes", equipoService.getF irst5());
-        model.addAttribute("equiposRecientes", equipoService.getAllEquipos());
+    public String paginaEditarEquipo(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Equipo> pagina = equipoService.buscarEquipo(search, pageable);
+
+        model.addAttribute("equiposRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
         return "equipos/editar-equipo";
+    }
+
+
+    // Solo fragmento tabla (HTMX)
+    @GetMapping("/equipos/editar/tabla")
+    public String tablaEquipos(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Equipo> pagina = equipoService.buscarEquipo(search, pageable);
+
+        model.addAttribute("equiposRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "equipos/editar-equipo :: tablaContainer";
     }
 
     @GetMapping("/equipos/form-editar")
     public String getFormEditar(@RequestParam Integer id, Model model) {
         model.addAttribute("equipo", equipoService.getEquipoById(id));
         return "equipos/form-editar-fragment";
-    }
-
-    // Metodo para barra de busqueda del Equipo, despliega las busqeudas en un fragmento
-    @GetMapping("/equipos/buscar")
-    public String buscarEquipos(@RequestParam String search, Model model) {
-        model.addAttribute("equipos", equipoService.searchByDescripcion(search));
-        return "equipos/resultados-fragment";
     }
 
     @GetMapping("/visitas/crear") // ruta
