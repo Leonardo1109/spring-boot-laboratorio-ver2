@@ -1,6 +1,8 @@
 package com.lab.ver2.service;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
@@ -86,8 +88,17 @@ public class VisitaService {
                 visitaRepository.findByNoCuentaRFCContainingIgnoreCase(texto));
     }
 
+    /*
     public List<Visita> getFirst5() {
         return visitaRepository.findTop5ByOrderByIdDesc();
+    }
+    */
+    public Page<Visita> buscarVisita(String search, Pageable pageable) {
+
+        if (search == null || search.isBlank()) {
+            return visitaRepository.findAll(pageable);
+        }
+        return visitaRepository.search(search, pageable);
     }
 
     public List<VisitaGetDTO> getVisitasByProyecto(Integer id){        

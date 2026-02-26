@@ -8,62 +8,91 @@
 
                 <!-- BUSCADOR -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Buscar por Numero de Cuenta o RFC</label>
+                    <label class="form-label fw-semibold">Buscar por Nombre, Correo, Numero de Cuenta o RFC</label>
                     <input 
                         type="text" 
                         class="form-control"
                         placeholder="Escribe para buscar..."
-                        hx-get="/pantallas/visitas/buscar"
-                        hx-trigger="keyup changed delay:300ms"
-                        hx-target="#resultados"
-                        hx-include="[name='search']"
                         name="search"
+                        th:value="${search}"
+                        hx-get="/pantallas/visitas/editar/tabla?page=0"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#tabla-container"
+                        hx-swap="innerHTML"
                     >
                 </div>
 
-                <!-- RESULTADOS -->
-                <div id="resultados"></div>
-
                 <!-- VISITAS RECIENTES -->
-                <h5 class="mt-4 mb-3">Últimas Visitas registradas</h5>
+                <h5 class="mt-4 mb-3">Resultados</h5>
 
-                <table class="table table-striped table-bordered">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Numero de cuenta | RFC</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Carrera</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <th:block th:each="v : ${visitasRecientes}">
+                <div id="tabla-container" th:fragment="tablaContainer">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
                             <tr>
-                                <td>[[${v.id}]]</td>
-                                <td>[[${v.noCuentaRFC}]]</td>
-                                <td>[[${v.email}]]</td>
-                                <td>[[${v.rol.descripcion}]]</td>
-                                <td>[[${v.carrera.nombre}]]</td>
-                                <td>
-                                    <button 
-                                        class="btn btn-primary btn-sm"
-                                        th:hx-get="@{/pantallas/visitas/form-editar(id=${v.id})}"
-                                        hx-target="#form-editar"
-                                        hx-swap="innerHTML">
-                                        Editar
-                                    </button>
-                                </td>
+                                <th>Numero de cuenta | RFC</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Carrera</th>
+                                <th>Acciones</th>
                             </tr>
-                        </th:block>
-                    </tbody>
-                </table>
+                        </thead>
 
-                <!-- FORMULARIO DE EDICIÓN (VACÍO AL INICIO) -->
-                <div id="form-editar"></div>
-
+                        <tbody>
+                            <th:block th:each="v : ${visitasRecientes}">
+                                <tr>
+                                    <td>[[${v.noCuentaRFC}]]</td>
+                                    <td>[[${v.nombre}]] [[${v.apellidoPaterno}]] [[${v.apellidoMaterno}]]</td>
+                                    <td>[[${v.email}]]</td>
+                                    <td>[[${v.rol.descripcion}]]</td>
+                                    <td>[[${v.carrera.nombre}]]</td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-primary btn-sm"
+                                            th:hx-get="@{/pantallas/visitas/form-editar(id=${v.id})}"
+                                            hx-target="#main-content"
+                                            hx-swap="innerHTML">
+                                            Editar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination">
+                    
+                            <li th:if="${page.hasPrevious()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/visitas/editar/tabla(page=${page.number - 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Anterior
+                                </button>
+                            </li>
+                    
+                            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                th:classappend="${i == page.number} ? 'active'"
+                                class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/visitas/editar/tabla(page=${i}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML"
+                                th:text="${i + 1}">
+                                </button>
+                            </li>
+                    
+                            <li th:if="${page.hasNext()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/visitas/tabla(page=${page.number + 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Siguiente
+                                </button>
+                            </li>                    
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>

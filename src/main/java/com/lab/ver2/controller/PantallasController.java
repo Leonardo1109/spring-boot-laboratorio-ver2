@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.lab.ver2.dto.EquipoGetDTO;
 import com.lab.ver2.model.Equipo;
 import com.lab.ver2.model.Proyecto;
+import com.lab.ver2.model.Visita;
 import com.lab.ver2.service.*;
 
 import org.springframework.ui.Model;
@@ -92,10 +93,45 @@ public class PantallasController {
         return "visitas/crear-visita"; // HTML
     }
 
+    /*
     @GetMapping("/visitas/editar")
     public String editarVisita(Model model) {
         model.addAttribute("visitasRecientes", visitaService.getFirst5());
         return "visitas/editar-visita";
+    }
+    */
+
+    @GetMapping("/visitas/editar")
+    public String paginaEditarVisitas(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 3, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Visita> pagina = visitaService.buscarVisita(search, pageable);
+
+        model.addAttribute("visitasRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "visitas/editar-visita";
+    }
+
+    // Editar fragmento HTMX
+    @GetMapping("/visitas/editar/tabla")
+    public String tablaVisitas(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 3, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Visita> pagina = visitaService.buscarVisita(search, pageable);
+
+        model.addAttribute("visitasRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "visitas/editar-visita :: tablaContainer";
     }
 
     @GetMapping("/visitas/form-editar")
@@ -126,7 +162,6 @@ public class PantallasController {
         return "proyectos/editar-proyecto";
     }
     */
-
 
     @GetMapping("/proyectos/editar")
     public String paginaEditarProyectos(
