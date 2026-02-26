@@ -8,30 +8,27 @@
 
                 <!-- BUSCADOR -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Buscar por Clave</label>
+                    <label class="form-label fw-semibold">Buscar por Proyecto: (Nombre, Clave); Responsable: (Nombre, No Cuenta o RFC); Carrera</label>
                     <input 
                         type="text" 
                         class="form-control"
                         placeholder="Escribe para buscar..."
-                        hx-get="/pantallas/proyectos/buscar"
-                        hx-trigger="keyup changed delay:300ms"
-                        hx-target="#resultados"
-                        hx-include="[name='search']"
                         name="search"
+                        th:value="${search}"
+                        hx-get="/pantallas/proyectos/editar/tabla?page=0"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#tabla-container"
+                        hx-swap="innerHTML"
                     >
                 </div>
 
-                <!-- RESULTADOS -->
-                <div id="resultados"></div>
+                <!-- PROYECTOS RECIENTES -->
+                <h5 class="mt-4 mb-3">Resultados:</h5>
 
-                <!-- EQUIPOS RECIENTES -->
-                <h5 class="mt-4 mb-3">Últimos Proyectos registrados</h5>
-
-                <div class="table-responsive">
+                <div id="tabla-container" th:fragment="tablaContainer">
                     <table class="table table-striped table-bordered tabla-ajustada">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th>
                                 <th>Clave</th>
                                 <th>Nombre</th>
                                 <th>Responsables</th>
@@ -43,13 +40,12 @@
                         <tbody>
                             <th:block th:each="p : ${proyectosRecientes}">
                                 <tr>
-                                    <td>[[${p.id}]]</td>
                                     <td>[[${p.clave}]]</td>
                                     <td>[[${p.nombre}]]</td>
                                     <td class="celda-scroll">
                                         <span th:each="v : ${p.visitas}"
                                               class="badge bg-primary me-1">
-                                            [[${v.nombre}]] - [[${v.noCuentaRFC}]]
+                                            [[${v.nombre}]] [[${v.apellidoPaterno}]] [[${v.apellidoMaterno}]] - [[${v.noCuentaRFC}]]
                                         </span>
                                     </td>
                                     <td class="celda-scroll">
@@ -71,6 +67,40 @@
                             </th:block>
                         </tbody>
                     </table>
+
+                    <nav>
+                        <ul class="pagination">
+                    
+                            <li th:if="${page.hasPrevious()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/proyectos/editar/tabla(page=${page.number - 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Anterior
+                                </button>
+                            </li>
+                    
+                            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                th:classappend="${i == page.number} ? 'active'"
+                                class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/proyectos/editar/tabla(page=${i}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML"
+                                th:text="${i + 1}">
+                                </button>
+                            </li>
+                    
+                            <li th:if="${page.hasNext()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/proyectos/editar/tabla(page=${page.number + 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Siguiente
+                                </button>
+                            </li>                    
+                        </ul>
+                    </nav>
                 </div>
 
                 <!-- FORMULARIO DE EDICIÓN (VACÍO AL INICIO) -->

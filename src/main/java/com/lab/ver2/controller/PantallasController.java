@@ -1,19 +1,14 @@
 package com.lab.ver2.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.lab.ver2.dto.EquipoGetDTO;
 import com.lab.ver2.model.Equipo;
-import com.lab.ver2.service.EquipoService;
-import com.lab.ver2.service.ProyectoService;
-import com.lab.ver2.service.VisitaService;
+import com.lab.ver2.model.Proyecto;
+import com.lab.ver2.service.*;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +32,17 @@ public class PantallasController {
         return "inicio"; 
     }
 
+    // ====================================================================================== //
+    //                                          Equipo
+    // ====================================================================================== //
+
+    // Enrutamiento para crear un equipo
     @GetMapping("/equipos/crear") // ruta
     public String crearEquipoForm() {
         return "equipos/crear-equipo"; // HTML
     }
 
-    // Página completa
+    // Paginar los equipos un parametro recibido
     @GetMapping("/equipos/editar")
     public String paginaEditarEquipo(
             @RequestParam(required = false) String search,
@@ -59,8 +59,7 @@ public class PantallasController {
         return "equipos/editar-equipo";
     }
 
-
-    // Solo fragmento tabla (HTMX)
+    // Editar fragmento de tabla (HTMX)
     @GetMapping("/equipos/editar/tabla")
     public String tablaEquipos(
             @RequestParam(required = false) String search,
@@ -77,11 +76,16 @@ public class PantallasController {
         return "equipos/editar-equipo :: tablaContainer";
     }
 
+    // Pagina para Editar por ID
     @GetMapping("/equipos/form-editar")
     public String getFormEditar(@RequestParam Integer id, Model model) {
         model.addAttribute("equipo", equipoService.getEquipoById(id));
         return "equipos/form-editar-fragment";
     }
+
+    // ====================================================================================== //
+    //                                          Visitante
+    // ====================================================================================== //
 
     @GetMapping("/visitas/crear") // ruta
     public String crearVisitaForm() {
@@ -106,15 +110,55 @@ public class PantallasController {
         return "visitas/resultados-fragment";
     }
 
+    // ====================================================================================== //
+    //                                          Proyecto
+    // ====================================================================================== //
+    
     @GetMapping("/proyectos/crear") 
     public String crearProyectoForm() {
         return "proyectos/crear-proyecto";
     }
 
+    /*
     @GetMapping("/proyectos/editar")
     public String editarProyecto(Model model) {
         model.addAttribute("proyectosRecientes", proyectoService.getFirst5());
         return "proyectos/editar-proyecto";
+    }
+    */
+
+
+    @GetMapping("/proyectos/editar")
+    public String paginaEditarProyectos(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Proyecto> pagina = proyectoService.buscarProyecto(search, pageable);
+
+        model.addAttribute("proyectosRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "proyectos/editar-proyecto";
+    }
+
+    // Editar fragmento HTMX
+    @GetMapping("/proyectos/editar/tabla")
+    public String tablaProyectos(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Proyecto> pagina = proyectoService.buscarProyecto(search, pageable);
+
+        model.addAttribute("proyectosRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "proyectos/editar-proyecto :: tablaContainer";
     }
 
     @GetMapping("/proyectos/form-editar")
@@ -128,6 +172,10 @@ public class PantallasController {
         model.addAttribute("proyectos", proyectoService.searchByClave(search));
         return "proyectos/resultados-fragment";
     }
+
+    // ====================================================================================== //
+    //                                          Asistencias
+    // ====================================================================================== //
 
     @GetMapping("/asistencias/principal")
     public String principalAsistencias() {

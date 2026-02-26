@@ -2,6 +2,8 @@ package com.lab.ver2.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
@@ -89,9 +91,18 @@ public class ProyectoService {
         proyectoRepository.deleteById(id);;
     }
 
+    public Page<Proyecto> buscarProyecto(String search, Pageable pageable) {
+
+        if (search == null || search.isBlank()) {
+            return proyectoRepository.findAll(pageable);
+        }
+        return proyectoRepository.searchComplete(search, pageable);
+    }
+    /*
     public List<ProyectoGetDTO> getFirst5(){
         return proyectoMapper.toDtos(proyectoRepository.findTop5ByOrderByIdDesc());
     }
+    */
 
     public List<ProyectoGetDTO> searchByClave(String clave){
         return proyectoMapper.toDtos(proyectoRepository.findByClaveContainingIgnoreCase(clave));
