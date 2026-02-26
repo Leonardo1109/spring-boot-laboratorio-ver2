@@ -1,6 +1,6 @@
 <div class="mt-4">
 
-    <h4 class="mb-3">Editar Visita: [[${visita.noCuentaRFC}]]</h4>
+    <h4 class="mb-3">Editar Visita: [[${visita.noCuentaRFC}]] - [[${visita.nombre}]] [[${visita.apellidoPaterno}]] [[${visita.apellidoMaterno}]]</h4>
 
     <form 
         th:hx-put="@{/api/visitas/{id}(id=${visita.id})}"
@@ -41,6 +41,19 @@
             >
         </div>
 
+        <!-- APELLIDO PATERNO -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Apellido Paterno</label>
+            <input 
+                type="text"
+                name="apellidoPaterno"
+                class="form-control"
+                minlength="3"
+                maxlength="120"
+                th:value="${visita.apellidoPaterno}"
+            >
+        </div>
+
         <!-- APELLIDO MATERNO -->
         <div class="mb-3">
             <label class="form-label fw-semibold">Apellido Materno</label>
@@ -52,19 +65,6 @@
                 maxlength="120"
                 required
                 th:value="${visita.apellidoMaterno}"
-            >
-        </div>
-
-        <!-- APELLIDO PATERNO -->
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Apellido Paterno</label>
-            <input 
-                type="text"
-                name="apellidoPaterno"
-                class="form-control"
-                minlength="3"
-                maxlength="120"
-                th:value="${visita.apellidoPaterno}"
             >
         </div>
 
@@ -113,6 +113,15 @@
             Actualizar
         </button>
 
+        <button 
+        type="button"
+            class="btn btn-secondary w-100 py-2 mt-2"
+            hx-get="/pantallas/visitas/editar"
+            hx-target="#main-content"
+            hx-swap="innerHTML">
+            Cancelar
+        </button>
+
     </form>
 </div>
 
@@ -127,4 +136,3 @@
         }
     });
 </script>
-    
