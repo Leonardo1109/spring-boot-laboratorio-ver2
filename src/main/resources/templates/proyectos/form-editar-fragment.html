@@ -134,6 +134,14 @@
         <button type="submit" class="btn btn-success w-100 py-2">
             Actualizar Proyecto
         </button>
+        <button 
+        type="button"
+            class="btn btn-secondary w-100 py-2 mt-2"
+            hx-get="/pantallas/proyectos/editar"
+            hx-target="#main-content"
+            hx-swap="innerHTML">
+            Cancelar
+        </button>
 
     </form>
 </div>
@@ -260,7 +268,7 @@
             const html = `
                 <div class="d-inline-flex align-items-center bg-primary text-white rounded-pill px-3 py-1 me-2 mb-2 shadow-sm" style="font-size: 0.875rem;">
                     <div>
-                        ${v.nombre} - ${v.noCuentaRFC} 
+                        ${v.noCuentaRFC} - ${v.nombre} ${v.apellidoPaterno} ${v.apellidoMaterno}
                     </div>
                     <button type="button" 
                             onclick="quitarVisita(${v.id})" 
@@ -342,16 +350,16 @@ document.body.addEventListener("htmx:beforeRequest", function (e) {
     // Asegurar que es el <form>
     if (!form || form.tagName !== "FORM") return;
 
-    console.log("📌 FORM ENVIADO A:", e.detail.path);
+    console.log("FORM ENVIADO A:", e.detail.path);
 
     const fd = new FormData(form);
 
-    console.log("📌 FORM DATA ENVIADO:");
+    console.log("FORM DATA ENVIADO:");
     for (const [key, val] of fd.entries()) {
         console.log(key, "=", val);
     }
 
-    console.log("👉 QUERY STRING EXACTA:");
+    console.log("QUERY STRING EXACTA:");
     console.log(new URLSearchParams(fd).toString());
 });
 

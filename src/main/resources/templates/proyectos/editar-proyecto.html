@@ -58,7 +58,7 @@
                                         <button 
                                             class="btn btn-primary btn-sm"
                                             th:hx-get="@{/pantallas/proyectos/form-editar(id=${p.id})}"
-                                            hx-target="#form-editar"
+                                            hx-target="#main-content"
                                             hx-swap="innerHTML">
                                             Editar
                                         </button>
@@ -102,10 +102,6 @@
                         </ul>
                     </nav>
                 </div>
-
-                <!-- FORMULARIO DE EDICIÓN (VACÍO AL INICIO) -->
-                <div id="form-editar"></div>
-
             </div>
         </div>
     </div>

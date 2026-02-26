@@ -76,7 +76,7 @@ public class VisitaController {
                     "<input type='checkbox' class='form-check-input me-3' " +
                         "name='visitasIds' value='" + v.getId() + "'>" +
                     "<span class='text-truncate'>" + 
-                        v.getNoCuentaRFC() + " — " + v.getNombre() +
+                        v.getNoCuentaRFC() + " — " + v.getNombre() + " " + v.getApellidoPaterno() + " " + v.getApellidoMaterno() +
                     "</span>" +
                 "</label>"
             );            
