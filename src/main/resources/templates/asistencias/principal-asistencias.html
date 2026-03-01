@@ -1,6 +1,49 @@
 <div data-page="equipos">
-    <p class="text-muted">Asistencias</p>
+    <h2 class="text-muted">Asistencias</h2>
+    <br>
 
+    <div class="mb-4">
+        <div class="btn-group flex-wrap shadow-sm" role="group" id="filtros-equipos">
+    
+            <button type="button"
+                    class="btn btn-light active"
+                    data-filtro="todos">
+                Todos
+            </button>
+    
+            <button type="button"
+                    class="btn btn-outline-success"
+                    data-filtro="1">
+                Disponible
+            </button>
+    
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-filtro="2">
+                En uso
+            </button>
+    
+            <button type="button"
+                    class="btn btn-outline-warning"
+                    data-filtro="3">
+                Reservado
+            </button>
+    
+            <button type="button"
+                    class="btn btn-outline-info"
+                    data-filtro="5">
+                Mantenimiento
+            </button>
+    
+            <button type="button"
+                    class="btn btn-outline-danger"
+                    data-filtro="4">
+                Fuera de servicio
+            </button>
+    
+        </div>
+    </div>
+    
     <h5 class="text-success">Disponible</h5>
     <div id="equipos-disponible" class="row g-3 mb-4"></div>
 

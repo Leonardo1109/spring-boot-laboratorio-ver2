@@ -1,6 +1,74 @@
 export class EquiposPage {
     static init() {
+        this.inicializarFiltros();
         this.cargar();
+    }
+
+    static inicializarFiltros() {
+        const contenedor = document.getElementById("filtros-equipos");
+        if (!contenedor) return;
+    
+        contenedor.addEventListener("click", (e) => {
+            const btn = e.target.closest("button");
+            if (!btn) return;
+    
+            const filtro = btn.dataset.filtro;
+            this.aplicarFiltro(filtro);
+    
+            // Opcional: marcar botón activo visualmente
+            contenedor.querySelectorAll("button").forEach(b => {
+                b.classList.remove("active");
+                if (b.dataset.filtro === "todos") {
+                    b.classList.remove("btn-dark");
+                    b.classList.add("btn-light");
+                } else {
+                    const color = this.estilosPorEstatus[b.dataset.filtro]?.border;
+                    if (color) {
+                        b.classList.remove(`btn-${color}`);
+                        b.classList.add(`btn-outline-${color}`);
+                    }
+                }
+            });
+            
+            btn.classList.add("active");
+            
+            if (btn.dataset.filtro === "todos") {
+                btn.classList.remove("btn-light");
+                btn.classList.add("btn-dark");
+            } else {
+                const color = this.estilosPorEstatus[btn.dataset.filtro]?.border;
+                if (color) {
+                    btn.classList.remove(`btn-outline-${color}`);
+                    btn.classList.add(`btn-${color}`);
+                }
+            }
+        });
+    }
+
+    static aplicarFiltro(filtro) {
+        const secciones = {
+            1: "equipos-disponible",
+            2: "equipos-en-uso",
+            3: "equipos-reservado",
+            4: "equipos-fuera-servicio",
+            5: "equipos-en-mantenimiento"
+        };
+    
+        Object.entries(secciones).forEach(([estatus, id]) => {
+            const contenedor = document.getElementById(id);
+            if (!contenedor) return;
+    
+            const titulo = contenedor.previousElementSibling;
+    
+            if (filtro === "todos") {
+                contenedor.style.display = "flex";
+                if (titulo) titulo.style.display = "block";
+            } else {
+                const visible = filtro === estatus;
+                contenedor.style.display = visible ? "flex" : "none";
+                if (titulo) titulo.style.display = visible ? "block" : "none";
+            }
+        });
     }
 
     static cargar() {
