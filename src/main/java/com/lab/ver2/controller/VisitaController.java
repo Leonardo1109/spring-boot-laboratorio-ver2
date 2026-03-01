@@ -1,6 +1,8 @@
 package com.lab.ver2.controller;
 
 import com.lab.ver2.dto.*;
+import com.lab.ver2.mapping.VisitaMapper;
+import com.lab.ver2.model.Visita;
 import com.lab.ver2.service.VisitaService;
 
 import jakarta.validation.Valid;
@@ -8,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class VisitaController {
 
     private final VisitaService visitaService;
+    private final VisitaMapper visitaMapper;
 
     @GetMapping
     public ResponseEntity<List<VisitaGetDTO>> getAllVisitas(){
@@ -56,36 +62,13 @@ public class VisitaController {
     }
 
     @GetMapping("/buscar")
-    public String buscarResponsables(@RequestParam("texto") String texto) {
+    public Page<VisitaGetDTO> buscarVisitas(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 5, sort = "id") Pageable pageable
+    ) {
 
-        if (texto == null || texto.isBlank()) {
-            return "<div class='text-muted'>Escribe un RFC o Número de Cuenta...</div>";
-        }
+        Page<Visita> pagina = visitaService.buscarVisita(search, pageable);
 
-        var resultados = visitaService.searchByNCRFC(texto);
-
-        if (resultados.isEmpty()) {
-            return "<div class='text-danger'>No se encontraron resultados.</div>";
-        }
-
-        StringBuilder html = new StringBuilder("<div>");
-
-        for (var v : resultados) {
-            html.append(
-                "<label class='d-flex align-items-center mb-2 p-2 border rounded shadow-sm w-100'>" +
-                    "<input type='checkbox' class='form-check-input me-3' " +
-                        "name='visitasIds' value='" + v.getId() + "'>" +
-                    "<span class='text-truncate'>" + 
-                        v.getNoCuentaRFC() + " — " + v.getNombre() + " " + v.getApellidoPaterno() + " " + v.getApellidoMaterno() +
-                    "</span>" +
-                "</label>"
-            );            
-        }
-
-        html.append("</div>");
-        return html.toString();
-    }
-
-
-
+        return pagina.map(visitaMapper::toDto);
+    }   
 }

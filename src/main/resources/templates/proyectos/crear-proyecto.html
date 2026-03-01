@@ -1,275 +1,85 @@
-<div class="container-fluid">
+<div class="container-fluid" data-page="proyecto-crear">
     <div class="row">
         <div class="col-12">
-
             <div class="card shadow-sm p-4">
+
                 <h2 class="mb-4">Crear Proyecto</h2>
 
-                <!-- FORMULARIO POST -->
-                <form
-                    class="mt-3"
-                    hx-post="/api/proyectos"
-                    hx-swap="none"
-                    hx-on::after-request="
-                        if (event.detail.successful && event.detail.elt === this) {
-                            alert('Proyecto creado correctamente');
-                            htmx.ajax('GET', '/pantallas/proyectos/crear', '#main-content');
-                        }
-                    "
-                >
+                <form id="proyecto-form" class="mt-3">
 
                     <!-- NOMBRE -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nombre</label>
-                        <input type="text" name="nombre" class="form-control"
-                               minlength="5" maxlength="150" required>
+                        <input type="text" name="nombre" class="form-control" required>
                     </div>
 
                     <!-- DESCRIPCION -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Descripción</label>
-                        <textarea name="descripcion" class="form-control"
-                                  minlength="5" required></textarea>
+                        <textarea name="descripcion" class="form-control" required></textarea>
                     </div>
 
                     <!-- OBJETIVOS -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Objetivos</label>
-                        <textarea name="objetivos" class="form-control"
-                                  minlength="5" required></textarea>
+                        <textarea name="objetivos" class="form-control" required></textarea>
                     </div>
 
                     <!-- CLAVE -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Clave</label>
-                        <input type="text" name="clave" class="form-control"
-                               minlength="5" maxlength="30" required>
+                        <input type="text" name="clave" class="form-control" required>
                     </div>
 
-                    <!-- RESPONSABLES (Visitas) -->
+                    <!-- RESPONSABLES -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold text-primary">Responsables</label>
+                        <label class="form-label fw-semibold text-primary">
+                            Responsables
+                        </label>
 
-                        <!-- campo de búsqueda -->
-                        <div class="input-group shadow-sm rounded-3 mb-2">
-                            <span class="input-group-text bg-primary text-white">
-                                <i class="bi bi-search"></i>
-                            </span>
+                        <input type="text"
+                            id="buscar-responsable"
+                            class="form-control mb-2"
+                            placeholder="Buscar por RFC, nombre o email...">
 
-                            <input type="text"
-                                    class="form-control"
-                                    placeholder="Buscar por RFC o Numero de Cuenta..."
-                                    name="texto"
-                                    hx-get="/api/visitas/buscar"
-                                    hx-target="#lista-responsables"
-                                    hx-trigger="keyup changed delay:300ms"
-                                    hx-include="this"
-                                    hx-swap="innerHTML">
-
-
+                        <div id="lista-responsables"
+                            class="border rounded p-2 small"
+                            style="min-height:60px; max-height:200px; overflow-y:auto;">
                         </div>
 
-                        <!-- resultados HTMX -->
-                        <div id="lista-responsables" class="border rounded p-3 small text-muted">
-                            Escribe un RFC o Numero de Cuenta para buscar responsables...
-                        </div>
+                        <h6 class="fw-bold mt-3">
+                            Responsables seleccionados:
+                        </h6>
 
-                        <div id="responsables-seleccionados" class="mt-3 p-3 border rounded bg-light" style="display:none;">
-                            <h6 class="fw-bold mb-2">Responsables seleccionados:</h6>
-                            <div id="responsables-tags" class="d-flex flex-wrap gap-2"></div>
+                        <div id="responsables-seleccionados"
+                            class="mt-2 p-2 border rounded bg-light"
+                            style="min-height:50px;">
                         </div>
-                        
-
-                        <small class="form-text text-muted">Selecciona uno o varios responsables.</small>
                     </div>
 
                     <!-- CARRERAS -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Carreras</label>
-
-                        <div id="carreras-container"
-                            class="row"
-                            hx-get="/api/carreras/options-checkbox"
-                            hx-trigger="load"
-                            hx-target="#carreras-container"
-                            hx-swap="innerHTML">
-                            
-                            <div class="text-muted">Cargando carreras...</div>
-                        </div>
-
+                        <div id="carreras-container" class="row"></div>
                     </div>
-
-
 
                     <!-- ACTIVIDADES -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold text-primary">Actividades</label>
-
                         <div id="actividades-container"></div>
 
                         <button type="button"
-                                class="btn btn-outline-primary mt-2"
-                                onclick="agregarActividad()">
-                            <i class="bi bi-plus-circle"></i> Agregar actividad
+                                id="btn-agregar-actividad"
+                                class="btn btn-outline-primary mt-2">
+                            Agregar actividad
                         </button>
-
-                        <small class="form-text text-muted d-block mt-2">
-                            Cada actividad solo requiere descripción y horas
-                        </small>
                     </div>
 
-
-                    <!-- SUBMIT -->
                     <button type="submit" class="btn btn-primary w-100 py-2">
                         Guardar Proyecto
                     </button>
-
-                    <div id="visitasIds-hidden"></div>
-
                 </form>
             </div>
-
         </div>
     </div>
 </div>
-
-
-<!-- SCRIPT PARA AGREGAR/ELIMINAR ACTIVIDADES -->
-<script>
-    
-    window.indexActividad = window.indexActividad || 0;
-
-    function agregarActividad() {
-        const cont = document.getElementById("actividades-container");
-
-        const html = `
-            <div class="card p-3 shadow-sm mb-3" id="actividad-${indexActividad}">
-                
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Descripción</label>
-                    <textarea class="form-control"
-                              name="actividades[${indexActividad}].descripcion"
-                              minlength="5" maxlength="200"
-                              required></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Horas</label>
-                    <input type="number"
-                           class="form-control"
-                           name="actividades[${indexActividad}].horas"
-                           min="1"
-                           required>
-                </div>
-
-                <button type="button"
-                        class="btn btn-danger"
-                        onclick="document.getElementById('actividad-${indexActividad}').remove()">
-                    <i class="bi bi-x-circle"></i> Eliminar actividad
-                </button>
-
-            </div>
-        `;
-
-        cont.insertAdjacentHTML("beforeend", html);
-
-        indexActividad++;
-    }
-
-// ================================
-//          VISITAS
-// ================================
-
-// Set para guardar IDs seleccionados
-
-    // Set para guardar IDs seleccionados
-    window.responsablesSeleccionados = window.responsablesSeleccionados || new Set();
-
-
-    // Mapa (id → texto mostrado)
-    window.responsablesData = window.responsablesData || new Map();
-
-
-    // Renderizar visualmente los seleccionados
-    function renderSeleccionados() {
-        const cont = document.getElementById("responsables-tags");
-        const wrapper = document.getElementById("responsables-seleccionados");
-        const hidden = document.getElementById("visitasIds-hidden");
-
-        if (!cont || !wrapper || !hidden) return; // <--
-
-
-        cont.innerHTML = "";
-        hidden.innerHTML = "";
-
-        if (responsablesSeleccionados.size === 0) {
-            wrapper.style.display = "none";
-            return;
-        }
-
-        wrapper.style.display = "block";
-
-        responsablesSeleccionados.forEach(id => {
-            const texto = responsablesData.get(id) || "Responsable " + id;
-
-            // Tag visual
-            const tag = document.createElement("span");
-            tag.className = "badge bg-primary d-flex align-items-center gap-2 p-2";
-            tag.innerHTML = `
-                ${texto}
-                <button type="button" class="btn-close btn-close-white"
-                    style="font-size:0.6rem;"
-                    onclick="quitarResponsable('${id}')">
-                </button>`;
-            cont.appendChild(tag);
-
-            // Hidden input PARA EL BACKEND
-            hidden.innerHTML += `<input type="hidden" name="visitasIds" value="${id}">`;
-        });
-    }
-
-
-    // Quitar desde el tag
-    function quitarResponsable(id) {
-        responsablesSeleccionados.delete(id);
-
-        const checkbox = document.querySelector(
-            `#lista-responsables input[type='checkbox'][value='${id}']`
-        );
-
-        if (checkbox) checkbox.checked = false;
-
-        renderSeleccionados();
-    }
-
-    // Detectar clics en los checkboxes
-    document.body.addEventListener("change", function (e) {
-        if (e.target.name === "visitasIds") {
-            const id = e.target.value;
-            const labelText = e.target.closest("label").innerText.trim();
-
-            if (e.target.checked) {
-                responsablesSeleccionados.add(id);
-                responsablesData.set(id, labelText);
-            } else {
-                responsablesSeleccionados.delete(id);
-            }
-
-            renderSeleccionados();
-        }
-    });
-
-    // Cuando HTMX actualiza los resultados
-    document.body.addEventListener("htmx:afterSwap", function (e) {
-        if (e.detail.target.id === "lista-responsables") {
-            responsablesSeleccionados.forEach(id => {
-                const checkbox = document.querySelector(
-                    `#lista-responsables input[type='checkbox'][value='${id}']`
-                );
-                if (checkbox) {
-                    checkbox.checked = true;
-                }
-            });
-        }
-    });
-</script>

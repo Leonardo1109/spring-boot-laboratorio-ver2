@@ -93,6 +93,7 @@ public class VisitaService {
         return visitaRepository.findTop5ByOrderByIdDesc();
     }
     */
+   
     public Page<Visita> buscarVisita(String search, Pageable pageable) {
 
         if (search == null || search.isBlank()) {

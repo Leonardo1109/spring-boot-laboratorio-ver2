@@ -198,7 +198,7 @@ public class PantallasController {
 
     @GetMapping("/proyectos/form-editar")
     public String getFormEditarProyectos(@RequestParam Integer id, Model model) {
-        model.addAttribute("proyecto", proyectoService.getProyectoById(id));
+        model.addAttribute("proyectoId", id);
         return "proyectos/form-editar-fragment";
     }
 

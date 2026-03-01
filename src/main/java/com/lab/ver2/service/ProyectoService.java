@@ -1,6 +1,10 @@
 package com.lab.ver2.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class ProyectoService {
 
     private final ProyectoMapper proyectoMapper;
-    private final ActividadMapper actividadMapper;
     private final ProyectoRepository proyectoRepository;
     private final CarreraRepository carreraRepository;
     private final VisitaRepository visitaRepository;
@@ -46,11 +49,12 @@ public class ProyectoService {
         proyecto.setVisitas(visitas);
         proyecto.setCarreras(carreras);
 
-        proyecto.getActividades().forEach(a -> a.setProyecto(proyecto));
+        proyecto.getActividades().forEach(a -> {
+            a.setId(null);
+            a.setProyecto(proyecto);
+        });
 
-        Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
-        return proyectoMapper.toDto(proyectoGuardado);
-
+        return proyectoMapper.toDto(proyectoRepository.save(proyecto));
     }
 
     @Transactional
@@ -63,11 +67,42 @@ public class ProyectoService {
         proyecto.setObjetivos(dto.getObjetivos());
         proyecto.setClave(dto.getClave());
 
-        // actividades
-        List<Actividad> nuevas = actividadMapper.toActividades(dto.getActividades());
-        proyecto.getActividades().clear(); 
-        nuevas.forEach(a -> a.setProyecto(proyecto));
-        proyecto.getActividades().addAll(nuevas);
+        // Actividades
+        Map<Integer, Actividad> actuales = proyecto.getActividades()
+            .stream()
+            .collect(Collectors.toMap(Actividad::getId, a -> a));
+
+        Set<Integer> idsRecibidos = new HashSet<>();
+       
+        for (ActividadPostDTO actDto : dto.getActividades()) {
+            
+            if (actDto.getId() != null) {
+
+                Actividad existente = actuales.get(actDto.getId());
+
+                if (existente == null) {
+                    throw new RuntimeException("Actividad no pertenece al proyecto");
+                }
+
+                existente.setDescripcion(actDto.getDescripcion());
+                existente.setHoras(actDto.getHoras());
+
+                idsRecibidos.add(existente.getId());
+
+            } else {
+                Actividad nueva = new Actividad();
+                nueva.setDescripcion(actDto.getDescripcion());
+                nueva.setHoras(actDto.getHoras());
+                nueva.setProyecto(proyecto);
+
+                proyecto.getActividades().add(nueva);
+            }
+        }
+
+        proyecto.getActividades().removeIf(a ->
+            a.getId() != null &&
+            !idsRecibidos.contains(a.getId())
+        );
 
         //visitas y carreras
         // visitas
