@@ -1,22 +1,37 @@
-<div>
-    <ul class="list-group">
-        <li class="list-group-item fw-bold text-primary">Resultados</li>
+<div class="card shadow-sm">
+    <div class="card-header bg-light fw-semibold text-primary">
+        Resultados
+    </div>
+
+    <ul class="list-group list-group-flush">
 
         <th:block th:if="${#lists.isEmpty(proyectos)}">
-            <li class="list-group-item text-muted">Sin resultados...</li>
+            <li class="list-group-item text-muted text-center py-3">
+                Sin resultados...
+            </li>
         </th:block>
 
         <th:block th:each="p : ${proyectos}">
-            <li class="list-group-item">
+            <li class="list-group-item list-group-item-action p-3">
+
                 <button 
-                    class="btn btn-link"
+                    class="w-100 text-start border-0 bg-transparent"
                     th:hx-get="@{/pantallas/proyectos/form-editar(id=${p.id})}"
                     hx-target="#form-editar"
                     hx-swap="innerHTML">
-                    [[${p.clave}]] (ID [[${p.id}]])
+
+                    <div class="fw-semibold text-dark">
+                        [[${p.clave}]]
+                    </div>
+
+                    <div class="text-muted">
+                        [[${p.nombre}]]
+                    </div>
+
                 </button>
 
             </li>
         </th:block>
+
     </ul>
 </div>

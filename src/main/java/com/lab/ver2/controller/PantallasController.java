@@ -142,7 +142,7 @@ public class PantallasController {
 
     @GetMapping("/visitas/buscar")
     public String buscarVisitas(@RequestParam String search, Model model) {
-        model.addAttribute("visitas", visitaService.searchByNCRFC(search));
+        model.addAttribute("visitas", visitaService.searchVisita(search));
         return "visitas/resultados-fragment";
     }
 
@@ -204,7 +204,7 @@ public class PantallasController {
 
     @GetMapping("/proyectos/buscar")
     public String buscarProyectos(@RequestParam String search, Model model) {
-        model.addAttribute("proyectos", proyectoService.searchByClave(search));
+        model.addAttribute("proyectos", proyectoService.searchByClaveNombre(search));
         return "proyectos/resultados-fragment";
     }
 

@@ -2,6 +2,7 @@ package com.lab.ver2.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -83,9 +84,19 @@ public class VisitaService {
         visitaRepository.deleteById(id);
     }
 
-    public List<VisitaGetDTO> searchByNCRFC(String texto) {
+    public List<VisitaGetDTO> searchVisita(String texto) {
+
+        if (texto == null || texto.trim().isEmpty()) {
+            return List.of();
+        }
+    
+        Pageable limit = PageRequest.of(0, 5);
+    
         return visitaMapper.toDtos(
-                visitaRepository.findByNoCuentaRFCContainingIgnoreCase(texto));
+                visitaRepository
+                    .search(texto.trim(), limit)
+                    .getContent()
+        );
     }
 
     /*

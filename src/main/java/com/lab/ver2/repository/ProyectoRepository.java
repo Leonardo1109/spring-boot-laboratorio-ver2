@@ -1,11 +1,10 @@
 package com.lab.ver2.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.lab.ver2.model.Proyecto;
@@ -13,8 +12,13 @@ import com.lab.ver2.model.Proyecto;
 @Repository
 public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>{
     //List<Proyecto> findTop5ByOrderByIdDesc();
-    List<Proyecto> findByClaveContainingIgnoreCase(String clave);
 
+     @Query("""
+          SELECT p FROM Proyecto p
+          WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.clave) LIKE LOWER(CONCAT('%', :search, '%'))
+     """)
+     Page<Proyecto> search(@Param("search") String search, Pageable pageable);
 
     @Query("""
           SELECT DISTINCT p FROM Proyecto p
@@ -28,9 +32,7 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>{
                OR LOWER(v.apellidoMaterno) LIKE LOWER(CONCAT('%', :search, '%'))
                OR LOWER(c.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
     """)
-    Page<Proyecto> searchComplete(String search, Pageable pageable);
-    
-    
+    Page<Proyecto> searchComplete(String search, Pageable pageable);   
 
     /*
     @Query(

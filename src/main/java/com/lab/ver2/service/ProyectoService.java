@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -139,7 +140,18 @@ public class ProyectoService {
     }
     */
 
-    public List<ProyectoGetDTO> searchByClave(String clave){
-        return proyectoMapper.toDtos(proyectoRepository.findByClaveContainingIgnoreCase(clave));
+    public List<ProyectoGetDTO> searchByClaveNombre(String texto){
+
+        if (texto == null || texto.trim().isEmpty()) {
+            return List.of();
+        }
+
+        Pageable limit = PageRequest.of(0, 5);
+
+        return proyectoMapper.toDtos(
+                proyectoRepository
+                    .search(texto.trim(), limit)
+                    .getContent()
+        );
     }
 }
