@@ -44,6 +44,7 @@ export class AsistenciaActivaPage {
 
     static renderizarAsistencia(a, equipoId) {
         this.asistenciaActual = a ?? null;
+        this.renderHeader(equipoId, a);
         this.renderHoras(a);
         this.renderDashboardVisita(a);
         this.renderDashboardProyecto(a);
@@ -77,7 +78,6 @@ export class AsistenciaActivaPage {
                             <input type="datetime-local" class="form-control"
                                 value="${this.toInputDate(salida)}"
                                 ${!a ? 'readonly' : ''}>
-                            <p>Estatus actual: ${estatusActual ?? 'sin asistencia'}</p>
                         </div>
                     </div>
                 </div>
@@ -91,17 +91,17 @@ export class AsistenciaActivaPage {
 
         const visita = a?.visita;
         if (!visita) {
-            cont.innerHTML = `<p class="text-muted">Sin visita asignada</p>`;
+            cont.innerHTML = `<p class="text-muted">Sin visitante asignado</p>`;
             return;
         }
 
         cont.innerHTML = `
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Visita actual</h5>
+                    <h5 class="card-title">Visitante actual</h5>
                     <p><strong>Nombre:</strong> ${visita.nombre} ${visita.apellidoPaterno} ${visita.apellidoMaterno}</p>
                     <p><strong>Numero de cuenta o RFC:</strong> ${visita.noCuentaRFC}</p>
-                    <p>Id visita ${visita.id}</p>
+                    <p>Email: ${visita.email}</p>
                 </div>
             </div>
         `;
@@ -118,7 +118,7 @@ export class AsistenciaActivaPage {
                 const input = this.root.querySelector('input[name="visitaId"]');
                 if (input) input.value = visita.id;
             })
-            .catch(err => console.error('Error cargando visita', err));
+            .catch(err => console.error('Error cargando visitante', err));
     }
 
     static renderDashboardProyecto(a) {
@@ -325,6 +325,34 @@ export class AsistenciaActivaPage {
                     .catch(err => console.error(err));
                 });
 
+    }
+
+    static renderHeader(equipoId, asistencia) {
+
+        const header = document.getElementById('equipo-header');
+        if (!header) return;
+    
+        const estados = {
+            1: 'Disponible',
+            2: 'En uso',
+            3: 'Reservado'
+        };
+    
+        const estatusId = asistencia?.equipo?.estatus?.id ?? 1;
+        const estatusNombre = estados[estatusId] ?? 'Desconocido';
+    
+        const badgeClass = {
+            1: 'bg-success',
+            2: 'bg-primary',
+            3: 'bg-warning'
+        }[estatusId] ?? 'bg-secondary';
+    
+        header.innerHTML = `
+            Equipo #${equipoId} 
+            <span class="badge ${badgeClass} ms-2">
+                ${estatusNombre}
+            </span>
+        `;
     }
 
     static toInputDate(iso) {

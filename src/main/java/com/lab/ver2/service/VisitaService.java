@@ -23,6 +23,7 @@ public class VisitaService {
     private final RolRepository rolRepository;
     private final CarreraRepository carreraRepository;
     private final EquipoService equipoService;
+    private final ProyectoRepository proyectoRepository;
 
     @Transactional
     public List<VisitaGetDTO> getAllVisitas() {
@@ -79,10 +80,15 @@ public class VisitaService {
 
     @Transactional
     public void deleteVisita(Integer id) {
-        if (!visitaRepository.existsById(id)) {
-            throw new RuntimeException("Visita no encontrada");
-        }
+        Visita visita = visitaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Visita no encontrada"));
+        
         equipoService.changeStatusByDelete("visita", id);
+        List<Proyecto> proyectos = proyectoRepository.findByVisitas_Id(id);
+
+        for (Proyecto p : proyectos) {
+            p.getVisitas().remove(visita);
+        }
         visitaRepository.deleteById(id);
     }
 

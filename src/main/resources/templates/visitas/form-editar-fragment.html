@@ -1,13 +1,13 @@
 <div class="mt-4">
 
-    <h4 class="mb-3">Editar Visita: [[${visita.noCuentaRFC}]] - [[${visita.nombre}]] [[${visita.apellidoPaterno}]] [[${visita.apellidoMaterno}]]</h4>
+    <h4 class="mb-3">Editar Visitante: [[${visita.noCuentaRFC}]] - [[${visita.nombre}]] [[${visita.apellidoPaterno}]] [[${visita.apellidoMaterno}]]</h4>
 
     <form 
         th:hx-put="@{/api/visitas/{id}(id=${visita.id})}"
         hx-swap="none"
         hx-on::after-request="
             if (event.detail.successful && event.detail.elt === this && event.detail.xhr && event.detail.xhr.status === 200) {
-                alert('Visita actualizada correctamente');
+                alert('Visitante actualizado correctamente');
                 htmx.ajax('GET', '/pantallas/visitas/editar', '#main-content');
             }
         "
@@ -128,11 +128,11 @@
             type="button"
             class="btn btn-outline-danger w-100 py-2 fw-bold"
             th:hx-delete="@{/api/visitas/{id}(id=${visita.id})}"
-            hx-confirm="¿Seguro que deseas eliminar esta visita? Esta acción no se puede deshacer."
+            hx-confirm="¿Seguro que deseas eliminar este visitante? Esta acción no se puede deshacer."
             hx-swap="none"
             hx-on::after-request="
                 if (event.detail.successful) {
-                    alert('Visita eliminada correctamente');
+                    alert('Visitante eliminado correctamente');
                     htmx.ajax('GET', '/pantallas/visitas/editar', '#main-content');
                 }
             ">

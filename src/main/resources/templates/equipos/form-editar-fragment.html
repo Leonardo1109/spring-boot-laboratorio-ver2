@@ -68,5 +68,20 @@
             Cancelar
         </button>
 
+        <button 
+            type="button"
+            class="btn btn-outline-danger w-100 py-2 fw-bold"
+            th:hx-delete="@{/api/equipos/{id}(id=${equipo.id})}"
+            hx-confirm="¿Seguro que deseas eliminar este equipo? Esta acción no se puede deshacer."
+            hx-swap="none"
+            hx-on::after-request="
+                if (event.detail.successful) {
+                    alert('Equipo eliminado correctamente');
+                    htmx.ajax('GET', '/pantallas/equipos/editar', '#main-content');
+                }
+            ">
+            Eliminar
+        </button>
+
     </form>
 </div>

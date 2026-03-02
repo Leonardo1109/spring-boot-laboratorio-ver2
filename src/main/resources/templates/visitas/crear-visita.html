@@ -4,7 +4,7 @@
 
             <div class="card shadow-sm p-4">
 
-                <h2 class="mb-4">Crear Visita</h2>
+                <h2 class="mb-4">Crear Visitante</h2>
 
                 <!-- primero post, despues de la peticion, redirigir a pantalla principal -->
                 <form 
@@ -13,7 +13,7 @@
                     hx-swap="none"
                     hx-on::after-request="
                         if (event.detail.successful && event.detail.elt === this) {
-                            alert('Visita creada correctamente');
+                            alert('Visitante creado correctamente');
                             htmx.ajax('GET', '/pantallas/visitas/crear', '#main-content');
                         }
                     "
@@ -135,7 +135,7 @@
 
 
                     <button type="submit" class="btn btn-primary w-100 py-2">
-                        Guardar Visita
+                        Guardar Visitante
                     </button>
 
                 </form>

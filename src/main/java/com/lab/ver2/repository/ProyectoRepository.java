@@ -1,5 +1,7 @@
 package com.lab.ver2.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +13,7 @@ import com.lab.ver2.model.Proyecto;
 
 @Repository
 public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>{
-    //List<Proyecto> findTop5ByOrderByIdDesc();
+    List<Proyecto> findByVisitas_Id(Integer id);
 
      @Query("""
           SELECT p FROM Proyecto p
