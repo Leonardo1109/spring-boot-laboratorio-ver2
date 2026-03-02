@@ -122,6 +122,23 @@
             Cancelar
         </button>
 
+        <hr class="my-4">
+
+        <button 
+            type="button"
+            class="btn btn-outline-danger w-100 py-2 fw-bold"
+            th:hx-delete="@{/api/visitas/{id}(id=${visita.id})}"
+            hx-confirm="¿Seguro que deseas eliminar esta visita? Esta acción no se puede deshacer."
+            hx-swap="none"
+            hx-on::after-request="
+                if (event.detail.successful) {
+                    alert('Visita eliminada correctamente');
+                    htmx.ajax('GET', '/pantallas/visitas/editar', '#main-content');
+                }
+            ">
+            Eliminar
+        </button>
+
     </form>
 </div>
 

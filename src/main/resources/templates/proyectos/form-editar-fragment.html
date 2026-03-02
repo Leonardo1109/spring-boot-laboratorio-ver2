@@ -1,4 +1,4 @@
-<div class="mt-4" data-page="proyecto-editar" th:attr="data-id=${proyectoId}">">
+<div class="mt-4" data-page="proyecto-editar" th:attr="data-id=${proyectoId}">
 
     <h4 class="mb-3">Editar Proyecto</h4>
 
@@ -76,6 +76,23 @@
             hx-target="#main-content"
             hx-swap="innerHTML">
             Cancelar
+        </button>
+
+        <hr class="my-4">
+
+        <button 
+            type="button"
+            class="btn btn-outline-danger w-100 py-2 fw-bold"
+            th:hx-delete="@{/api/proyectos/{id}(id=${proyectoId})}"
+            hx-confirm="¿Seguro que deseas eliminar este proyecto? Esta acción no se puede deshacer."
+            hx-swap="none"
+            hx-on::after-request="
+                if (event.detail.successful) {
+                    alert('Proyecto eliminado correctamente');
+                    htmx.ajax('GET', '/pantallas/proyectos/editar', '#main-content');
+                }
+            ">
+            Eliminar
         </button>
 
     </form>

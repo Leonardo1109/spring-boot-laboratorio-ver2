@@ -22,6 +22,7 @@ public class VisitaService {
     private final VisitaRepository visitaRepository;
     private final RolRepository rolRepository;
     private final CarreraRepository carreraRepository;
+    private final EquipoService equipoService;
 
     @Transactional
     public List<VisitaGetDTO> getAllVisitas() {
@@ -81,6 +82,7 @@ public class VisitaService {
         if (!visitaRepository.existsById(id)) {
             throw new RuntimeException("Visita no encontrada");
         }
+        equipoService.changeStatusByDelete("visita", id);
         visitaRepository.deleteById(id);
     }
 

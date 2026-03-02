@@ -1,14 +1,9 @@
 package com.lab.ver2.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
@@ -27,6 +22,7 @@ public class ProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final CarreraRepository carreraRepository;
     private final VisitaRepository visitaRepository;
+    private final EquipoService equipoService;
 
     @Transactional
     public List<ProyectoGetDTO> getAllProyectos(){
@@ -100,10 +96,15 @@ public class ProyectoService {
             }
         }
 
-        proyecto.getActividades().removeIf(a ->
-            a.getId() != null &&
-            !idsRecibidos.contains(a.getId())
-        );
+        List<Actividad> eliminadas = proyecto.getActividades()
+            .stream()
+            .filter(a -> a.getId() != null && !idsRecibidos.contains(a.getId()))
+            .toList();
+
+        for (Actividad act : eliminadas) {
+            equipoService.changeStatusByDelete("actividad", act.getId());
+        }
+        proyecto.getActividades().removeAll(eliminadas);
 
         //visitas y carreras
         // visitas
@@ -124,7 +125,8 @@ public class ProyectoService {
         if (!proyectoRepository.existsById(id)) {
             throw new RuntimeException("Proyecto no encontrado");
         }
-        proyectoRepository.deleteById(id);;
+        equipoService.changeStatusByDelete("proyecto", id);
+        proyectoRepository.deleteById(id);
     }
 
     public Page<Proyecto> buscarProyecto(String search, Pageable pageable) {
@@ -132,6 +134,8 @@ public class ProyectoService {
         if (search == null || search.isBlank()) {
             return proyectoRepository.findAll(pageable);
         }
+
+        
         return proyectoRepository.searchComplete(search, pageable);
     }
     /*

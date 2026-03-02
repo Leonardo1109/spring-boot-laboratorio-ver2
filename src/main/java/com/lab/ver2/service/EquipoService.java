@@ -151,5 +151,33 @@ public class EquipoService {
         equipo.setEstatus(estatus);
         equipoRepository.save(equipo);
     }
+
+    // Method if Visita, Proyecto, Actividad or Asistencia are deleted
+    @Transactional
+    public void changeStatusByDelete(String entityDeleted, Integer id){
+        if ("visita".equals(entityDeleted)) {
+            List<Equipo> equiposToChange = equipoRepository.findDistinctByAsistenciasVisitaId(id);
+            iteracionCambiarEstadoEquipo(equiposToChange);
+        }
+        if ("proyecto".equals(entityDeleted)) {
+            List<Equipo> equiposToChange = equipoRepository.findDistinctByAsistenciasActividadProyectoId(id);
+            iteracionCambiarEstadoEquipo(equiposToChange);
+        } 
+        if ("actividad".equals(entityDeleted)) {
+            List<Equipo> equiposToChange = equipoRepository.findDistinctByAsistenciasActividadId(id);
+            iteracionCambiarEstadoEquipo(equiposToChange);
+        }
+    }
+
+    public void iteracionCambiarEstadoEquipo(List<Equipo> equiposACambiar) {
+        if (equiposACambiar.isEmpty() || equiposACambiar == null) return;
+        List<Integer> ids = equiposACambiar.stream()
+            .map(Equipo::getId)
+            .toList();
+        Estatus disponible = estatusRepository.findById(1)
+            .orElseThrow(() -> new RuntimeException("Estatus no encontrado"));
+        
+        equipoRepository.updateEstadoDisponible(ids, disponible);
+    }
     
 }
