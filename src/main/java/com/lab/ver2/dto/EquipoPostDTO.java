@@ -21,6 +21,8 @@ public class EquipoPostDTO {
     @Size(min = 5, max = 50)
     private String codigoInventario;
 
+    private String observaciones;
+
     @NotNull
     private Integer estatusId;
 

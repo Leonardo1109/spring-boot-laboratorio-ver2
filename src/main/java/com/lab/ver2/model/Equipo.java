@@ -28,6 +28,9 @@ public class Equipo {
 
     @Column(name = "codigo_inventario", length = 50)
     private String codigoInventario;
+    
+    @Column(columnDefinition = "TEXT")
+    private String observaciones;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estatus")

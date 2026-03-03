@@ -1,15 +1,12 @@
 package com.lab.ver2.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
-import com.lab.ver2.mapping.AsistenciaMapper;
-import com.lab.ver2.mapping.EquipoMapper;
+import com.lab.ver2.mapping.*;
 import com.lab.ver2.model.*;
 import com.lab.ver2.repository.*;
 
@@ -72,6 +69,7 @@ public class EquipoService {
         equipo.setDescripcion(dto.getDescripcion());
         equipo.setUbicacion(dto.getUbicacion());
         equipo.setCodigoInventario(dto.getCodigoInventario());
+        equipo.setObservaciones(dto.getObservaciones());
         equipo.setEstatus(estatus);
         equipo.setTipoEquipo(tipoEquipo);
 

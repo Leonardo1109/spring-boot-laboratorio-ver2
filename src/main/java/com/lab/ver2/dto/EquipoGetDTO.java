@@ -12,6 +12,7 @@ public class EquipoGetDTO {
     private String descripcion;
     private String ubicacion;
     private String codigoInventario;
+    private String observaciones;
     private EstatusDTO estatus;
     private TipoEquipoDTO tipoEquipo;
 
