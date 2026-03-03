@@ -28,6 +28,7 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer>{
           LEFT JOIN p.carreras c
           WHERE LOWER(p.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
                OR LOWER(p.clave) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.descripcion) LIKE LOWER(CONCAT('%', :search, '%'))
                OR LOWER(v.noCuentaRFC) LIKE LOWER(CONCAT('%', :search, '%'))
                OR LOWER(v.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
                OR LOWER(v.apellidoPaterno) LIKE LOWER(CONCAT('%', :search, '%'))
