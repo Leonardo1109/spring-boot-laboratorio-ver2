@@ -43,7 +43,15 @@
     
         </div>
     </div>
-    
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h5 class="mb-0">Resultados</h5>
+        <button class="btn btn-custom-primary"
+                hx-get="/pantallas/asistencias/mostrar"
+                hx-target="#main-content"
+                hx-swap="innerHTML">
+            Ver Asistencias
+        </button>
+    </div> 
     <h5 class="text-success">Disponible</h5>
     <div id="equipos-disponible" class="row g-3 mb-4"></div>
 

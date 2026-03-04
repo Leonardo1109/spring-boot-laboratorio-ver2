@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.lab.ver2.dto.EquipoGetDTO;
+import com.lab.ver2.model.Asistencia;
 import com.lab.ver2.model.Equipo;
 import com.lab.ver2.model.Proyecto;
 import com.lab.ver2.model.Visita;
@@ -13,6 +14,9 @@ import com.lab.ver2.service.*;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/pantallas")
@@ -22,6 +26,7 @@ public class PantallasController {
     private final EquipoService equipoService;
     private final VisitaService visitaService;
     private final ProyectoService proyectoService;
+    private final AsistenciaService asistenciaService;
 
     @GetMapping
     public String home() {
@@ -230,4 +235,37 @@ public class PantallasController {
         model.addAttribute("idEquipo", id);
         return "/asistencias/registrar-asistencia"; 
     }
+
+    //hx-get="/pantallas/asistencia/mostrar"
+    @GetMapping("/asistencias/mostrar")
+    public String mostrarAsistencias(
+        @RequestParam(required = false) String search,
+        @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+        Pageable pageable,
+        Model model) {
+
+        Page<Asistencia> pagina = asistenciaService.buscarAsistencia(search, pageable);
+        model.addAttribute("asistenciasRecientes", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+        return "/asistencias/mostrar-asistencias";
+    }
+
+    
+    // Editar fragmento HTMX
+    @GetMapping("/asistencias/mostrar/tabla")
+    public String tablaAsistencias(
+        @RequestParam(required = false) String search,
+        @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+        Pageable pageable,
+        Model model) {
+
+            Page<Asistencia> pagina = asistenciaService.buscarAsistencia(search, pageable);
+            model.addAttribute("asistenciasRecientes", pagina.getContent());
+            model.addAttribute("page", pagina);
+            model.addAttribute("search", search);
+
+        return "/asistencias/mostrar-asistencias :: tablaContainer";
+    }
+    
 }

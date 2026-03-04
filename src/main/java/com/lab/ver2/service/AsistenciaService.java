@@ -3,6 +3,8 @@ package com.lab.ver2.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.lab.ver2.dto.*;
@@ -95,6 +97,16 @@ public class AsistenciaService {
             throw new RuntimeException("Asistencia no encotnrada");
         }
         asistenciaRepository.deleteById(id);
+    }
+
+    public Page<Asistencia> buscarAsistencia(String search, Pageable pageable) {
+
+        if (search == null || search.isBlank()) {
+            return asistenciaRepository.findAll(pageable);
+        }
+
+        
+        return asistenciaRepository.searchComplete(search, pageable);
     }
 
 }

@@ -1,0 +1,95 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h2 class="mb-4">Asistencia</h2>
+
+                <!-- BUSCADOR -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Buscar por Equipo (Codigo Inventario, Descripcion, Ubicacion), Visitante (Numero de cuenta o RFC, Nombre), Proyecto (Clave, Nombre, Descripcion) </label>
+                    <input 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Escribe para buscar..."
+                        name="search"
+                        th:value="${search}"
+                        hx-get="/pantallas/asistencias/mostrar/tabla?page=0"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#tabla-container"
+                        hx-swap="innerHTML"
+                    >
+                </div>
+
+                <div id="tabla-container" th:fragment="tablaContainer">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Hora Entrada</th>
+                                <th>No Cuenta</th>
+                                <th>Visitante</th>
+                                <th>Equipo</th>
+                                <th>Proyecto</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <th:block th:each="a : ${asistenciasRecientes}">
+                                <tr>
+                                    <td>[[${a.horaEntrada}]]</td>
+                                    <td>[[${a.visita.noCuentaRFC}]]</td>
+                                    <td>[[${a.visita.nombre}]] [[${a.visita.apellidoPaterno}]] [[${a.visita.apellidoMaterno}]]</td>
+                                    <td>
+                                        <strong>[[${a.equipo.codigoInventario}]]</strong><br>
+                                        <small>[[${a.equipo.descripcion}]]</small><br>
+                                        <small class="text-muted">[[${a.equipo.ubicacion}]]</small>
+                                    </td>
+                                    <td>
+                                        <strong>[[${a.actividad.proyecto.clave}]]</strong><br>
+                                        <small>[[${a.actividad.proyecto.nombre}]]</small><br>
+                                        <small class="text-muted">[[${a.actividad.proyecto.descripcion}]]</small>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                    
+                    <nav>
+                        <ul class="pagination">
+                    
+                            <li th:if="${page.hasPrevious()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/asistencias/mostrar/tabla(page=${page.number - 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Anterior
+                                </button>
+                            </li>
+                    
+                            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                th:classappend="${i == page.number} ? 'active'"
+                                class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/asistencias/mostrar/tabla(page=${i}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML"
+                                th:text="${i + 1}">
+                                </button>
+                            </li>
+                    
+                            <li th:if="${page.hasNext()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/asistencias/mostrar/tabla(page=${page.number + 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Siguiente
+                                </button>
+                            </li>                    
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
