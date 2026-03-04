@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .requestMatchers("/pantallas/visitas/editar").hasRole("ADMIN")
 
                 .requestMatchers("/login").permitAll()
+                .requestMatchers("/css/**").permitAll()
                 .requestMatchers("/api/carreras", "/api/tipos-equipo").permitAll()
                 .requestMatchers("/api/admin-usuarios/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
