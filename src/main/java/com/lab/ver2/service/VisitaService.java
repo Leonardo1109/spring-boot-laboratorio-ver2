@@ -92,6 +92,7 @@ public class VisitaService {
         visitaRepository.deleteById(id);
     }
 
+    // Busqueda en asistencia
     public List<VisitaGetDTO> searchVisita(String texto) {
 
         if (texto == null || texto.trim().isEmpty()) {

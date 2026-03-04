@@ -14,11 +14,13 @@ public interface VisitaRepository extends JpaRepository<Visita, Integer>{
 
     @Query("""
         SELECT v FROM Visita v
+        JOIN v.carrera c
         WHERE LOWER(v.noCuentaRFC) LIKE LOWER(CONCAT('%', :search, '%'))
            OR LOWER(v.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
            OR LOWER(v.email) LIKE LOWER(CONCAT('%', :search, '%'))
            OR LOWER(v.apellidoPaterno) LIKE LOWER(CONCAT('%', :search, '%'))
            OR LOWER(v.apellidoMaterno) LIKE LOWER(CONCAT('%', :search, '%'))
+           OR LOWER(c.nombre) LIKE LOWER(CONCAT('%', :search, '%'))
     """)
     Page<Visita> search(String search, Pageable pageable); 
 }
