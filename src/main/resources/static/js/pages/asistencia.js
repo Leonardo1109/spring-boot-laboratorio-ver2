@@ -242,7 +242,7 @@ export class AsistenciaActivaPage {
                     Volver
             </button>`
             : `<button type="button" id="btn-accion-secundaria"
-                class="btn btn-danger w-100">
+                class="btn btn-outline-danger w-100">
                     Eliminar asistencia
             </button>`;
 
@@ -272,7 +272,7 @@ export class AsistenciaActivaPage {
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                    <button type="submit" class="btn btn-custom-primary w-100 mb-2">
                         Guardar asistencia
                     </button>
 

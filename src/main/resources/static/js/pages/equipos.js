@@ -111,6 +111,10 @@ export class EquiposPage {
             if (!ul) return;
 
             const ruta = this.obtenerRutaPorEstatus(e.estatus.id, e.id);
+
+            const mensajeButton = (e.estatus.id >= 1 && e.estatus.id <= 3) 
+                ? "Registrar Asistencia"
+                : "Cambiar Estado";
             
             const estilo = this.estilosPorEstatus[e.estatus.id];
 
@@ -135,11 +139,11 @@ export class EquiposPage {
 
                         <div class="mt-auto text-end">
                             <button 
-                                class="btn btn-outline-primary btn-sm"
+                                class="btn btn-custom-primary btn-sm"
                                 hx-get="${ruta}" 
                                 hx-target="#main-content"
                                 hx-swap="innerHTML">
-                                Ver equipo
+                                ${mensajeButton}
                             </button>
                         </div>
                     </div>

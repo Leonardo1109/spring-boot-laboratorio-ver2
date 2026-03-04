@@ -42,7 +42,15 @@
         <option value="4">Fuera de servicio</option>
     </select>
 
-    <button class="btn btn-primary mt-3">
+    <button class="btn btn-custom-primary w-100 py-2 mt-2">
         Guardar cambios
     </button>
+    <button 
+        type="button"
+            class="btn btn-secondary w-100 py-2 mt-2"
+            hx-get="/pantallas/asistencias/principal"
+            hx-target="#main-content"
+            hx-swap="innerHTML">
+            Volver
+        </button>
 </form>

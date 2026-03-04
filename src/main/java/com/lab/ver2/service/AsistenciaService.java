@@ -69,6 +69,15 @@ public class AsistenciaService {
         Asistencia asistencia = asistenciaRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Asistencia no encontrada"));
 
+        if (dto.getHoraEntrada() != null &&
+            dto.getHoraSalida() != null &&
+            !dto.getHoraSalida().isAfter(dto.getHoraEntrada())) {
+        
+            throw new IllegalArgumentException(
+                "La hora de salida debe ser mayor que la de entrada"
+            );
+        }
+        
         asistencia.setHoraEntrada(dto.getHoraEntrada());
         asistencia.setHoraSalida(dto.getHoraSalida());
         asistencia.setObservacion(dto.getObservacion());

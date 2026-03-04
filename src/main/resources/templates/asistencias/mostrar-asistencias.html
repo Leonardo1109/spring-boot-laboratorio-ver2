@@ -23,8 +23,8 @@
                 </div>
 
                 <div id="tabla-container" th:fragment="tablaContainer">
-                    <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
                                 <th>Hora Entrada</th>
                                 <th>No Cuenta</th>
@@ -37,7 +37,7 @@
                         <tbody>
                             <th:block th:each="a : ${asistenciasRecientes}">
                                 <tr>
-                                    <td>[[${a.horaEntrada}]]</td>
+                                    <td th:text="${#temporals.format(a.horaEntrada, 'dd/MM/yyyy HH:mm')}"></td>
                                     <td>[[${a.visita.noCuentaRFC}]]</td>
                                     <td>[[${a.visita.nombre}]] [[${a.visita.apellidoPaterno}]] [[${a.visita.apellidoMaterno}]]</td>
                                     <td>
@@ -88,6 +88,15 @@
                             </li>                    
                         </ul>
                     </nav>
+
+                    <button 
+                    type="button"
+                        class="btn btn-secondary w-100 py-2 mt-2"
+                        hx-get="/pantallas/asistencias/principal"
+                        hx-target="#main-content"
+                        hx-swap="innerHTML">
+                        Volver
+                    </button>
                 </div>
             </div>
         </div>
