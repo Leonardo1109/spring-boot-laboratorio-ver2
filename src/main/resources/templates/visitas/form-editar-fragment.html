@@ -1,6 +1,7 @@
 <div class="mt-4">
 
-    <h4 class="mb-3">Editar Visitante: [[${visita.noCuentaRFC}]] - [[${visita.nombre}]] [[${visita.apellidoPaterno}]] [[${visita.apellidoMaterno}]]</h4>
+    <h4 class="mb-3">Editar Visitante:</h4>
+    <h4>[[${visita.noCuentaRFC}]] - [[${visita.nombre}]] [[${visita.apellidoPaterno}]] [[${visita.apellidoMaterno}]]</h4>
 
     <form 
         th:hx-put="@{/api/visitas/{id}(id=${visita.id})}"
