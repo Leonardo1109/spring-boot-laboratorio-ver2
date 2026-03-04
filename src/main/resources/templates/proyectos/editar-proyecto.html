@@ -23,7 +23,16 @@
                 </div>
 
                 <!-- PROYECTOS RECIENTES -->
-                <h5 class="mt-4 mb-3">Resultados:</h5>
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h5 class="mb-0">Resultados:</h5>
+
+                    <button class="btn btn-custom-primary"
+                            hx-get="/pantallas/proyectos/crear"
+                            hx-target="#main-content"
+                            hx-swap="innerHTML">
+                        Crear Proyecto
+                    </button>
+                </div>
 
                 <div id="tabla-container" th:fragment="tablaContainer">
                     <table class="table table-striped table-bordered tabla-ajustada">
@@ -56,7 +65,7 @@
                                     </td>
                                     <td>
                                         <button 
-                                            class="btn btn-primary btn-sm"
+                                            class="btn btn-custom-primary btn-sm"
                                             th:hx-get="@{/pantallas/proyectos/form-editar(id=${p.id})}"
                                             hx-target="#main-content"
                                             hx-swap="innerHTML">

@@ -23,7 +23,15 @@
                 </div>
 
                 <!-- VISITAS RECIENTES -->
-                <h5 class="mt-4 mb-3">Resultados</h5>
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h5 class="mb-0">Resultados</h5>
+                    <button class="btn btn-custom-primary"
+                            hx-get="/pantallas/visitas/crear"
+                            hx-target="#main-content"
+                            hx-swap="innerHTML">
+                        Crear Visitante
+                    </button>
+                </div>
 
                 <div id="tabla-container" th:fragment="tablaContainer">
                     <table class="table table-striped table-bordered">
@@ -48,7 +56,7 @@
                                     <td>[[${v.carrera.nombre}]]</td>
                                     <td>
                                         <button 
-                                            class="btn btn-primary btn-sm"
+                                            class="btn btn-custom-primary btn-sm"
                                             th:hx-get="@{/pantallas/visitas/form-editar(id=${v.id})}"
                                             hx-target="#main-content"
                                             hx-swap="innerHTML">
