@@ -1,8 +1,11 @@
 package com.lab.ver2.model;
 
+import org.hibernate.envers.Audited;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+@Audited
 @Entity
 @Table(name = "usuario")
 @Data

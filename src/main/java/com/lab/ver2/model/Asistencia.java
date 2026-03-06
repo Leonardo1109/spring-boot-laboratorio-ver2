@@ -2,11 +2,14 @@ package com.lab.ver2.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+@Audited
 @Entity
 @Table(name = "asistencia")
 @Data

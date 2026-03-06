@@ -2,11 +2,14 @@ package com.lab.ver2.model;
 
 import java.util.List;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+@Audited
 @Entity
 @Table(name = "carrera")
 @Data

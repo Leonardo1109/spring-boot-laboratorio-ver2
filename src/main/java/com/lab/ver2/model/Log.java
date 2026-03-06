@@ -2,9 +2,12 @@ package com.lab.ver2.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.envers.Audited;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+@Audited
 @Entity
 @Table(name = "log")
 @Data
