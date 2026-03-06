@@ -27,6 +27,7 @@
                         <thead>
                             <tr>
                                 <th>Hora Entrada</th>
+                                <th>Hora Salida</th>
                                 <th>No Cuenta</th>
                                 <th>Visitante</th>
                                 <th>Equipo</th>
@@ -38,6 +39,7 @@
                             <th:block th:each="a : ${asistenciasRecientes}">
                                 <tr>
                                     <td th:text="${#temporals.format(a.horaEntrada, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td th:text="${a.horaSalida != null ? #temporals.format(a.horaSalida, 'dd/MM/yyyy HH:mm') : 'Pendiente'}"></td>
                                     <td>[[${a.visita.noCuentaRFC}]]</td>
                                     <td>[[${a.visita.nombre}]] [[${a.visita.apellidoPaterno}]] [[${a.visita.apellidoMaterno}]]</td>
                                     <td>
@@ -52,9 +54,6 @@
                                         <br>
                                         <strong>Actividad: </strong>
                                         <small class="text-muted">[[${a.actividad.descripcion}]]</small>
-                                        <br>
-                                        <strong>Horas: </strong>
-                                        <small class="text-muted">[[${a.actividad.horas}]]</small>
                                     </td>
                                 </tr>
                             </th:block>
