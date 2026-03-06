@@ -35,6 +35,7 @@ public class AdminCreation {
                         .nombre(data.getNombre())
                         .password(encoder.encode(data.getPassword()))
                         .esAdmin(data.isEsAdmin())
+                        .activo(true)
                         .build();
 
                 repo.save(admin);

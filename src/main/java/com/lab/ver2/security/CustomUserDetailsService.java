@@ -2,6 +2,7 @@ package com.lab.ver2.security;
 
 import java.util.List;
 
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .findByUserName(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Usuario no encontrado"));
+
+        if (!usuario.isActivo()) { throw new DisabledException("Usuario deshabilitado"); }
 
         String role = usuario.isEsAdmin() ? "ROLE_ADMIN" : "ROLE_USER";
 

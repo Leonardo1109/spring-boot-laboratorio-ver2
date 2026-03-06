@@ -14,5 +14,6 @@ public class UsuarioGetDTO {
     private String nombre;
     private String password;
     private boolean esAdmin;
+    private boolean activo;
 
 }

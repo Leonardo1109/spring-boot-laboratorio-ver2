@@ -1,3 +1,4 @@
+/*
 package com.lab.ver2.controller;
 
 import java.util.List;
@@ -48,3 +49,4 @@ public class AdminUsuarioController {
     }
 
 }
+*/

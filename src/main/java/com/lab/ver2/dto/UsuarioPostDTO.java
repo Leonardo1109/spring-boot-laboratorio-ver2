@@ -22,5 +22,6 @@ public class UsuarioPostDTO {
     private String password;
 
     private boolean esAdmin;
+    private boolean activo;
     
 }

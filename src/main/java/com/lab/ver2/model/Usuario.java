@@ -30,4 +30,8 @@ public class Usuario {
 
     @Column(name = "es_admin")
     private boolean esAdmin;
+
+    @Column(name = "activo")
+    private boolean activo;
+    
 }
