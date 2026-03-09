@@ -9,6 +9,7 @@ import com.lab.ver2.dto.EquipoGetDTO;
 import com.lab.ver2.model.Asistencia;
 import com.lab.ver2.model.Equipo;
 import com.lab.ver2.model.Proyecto;
+import com.lab.ver2.model.Usuario;
 import com.lab.ver2.model.Visita;
 import com.lab.ver2.service.*;
 
@@ -27,6 +28,7 @@ public class PantallasController {
     private final VisitaService visitaService;
     private final ProyectoService proyectoService;
     private final AsistenciaService asistenciaService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public String home() {
@@ -266,6 +268,55 @@ public class PantallasController {
             model.addAttribute("search", search);
 
         return "/asistencias/mostrar-asistencias :: tablaContainer";
+    }
+
+    // ====================================================================================== //
+    //                                          USUARIOS
+    // ====================================================================================== //
+
+    @GetMapping("/usuarios/crear") 
+    public String crearUsuario() {
+        return "usuarios/crear-usuario";
+    }
+
+    @GetMapping("/usuarios/principal")
+    public String princpalUsuarios(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Usuario> pagina = usuarioService.buscarUsuario(search, pageable);
+
+        model.addAttribute("usuarios", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "usuarios/principal-usuarios";
+    }
+
+    // Editar fragmento de tabla (HTMX)
+    @GetMapping("/usuarios/principal/tabla")
+    public String tablaUsuarios(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable,
+            Model model) {
+
+        Page<Usuario> pagina = usuarioService.buscarUsuario(search, pageable);
+
+        model.addAttribute("usuarios", pagina.getContent());
+        model.addAttribute("page", pagina);
+        model.addAttribute("search", search);
+
+        return "usuarios/principal-usuarios :: tablaContainer";
+    }
+
+    // Pagina para Editar por ID
+    @GetMapping("/usuarios/editar")
+    public String editarUsuarios(@RequestParam Integer id, Model model) {
+        model.addAttribute("usuario", usuarioService.getById(id));
+        return "usuarios/editar-usuario";
     }
     
 }

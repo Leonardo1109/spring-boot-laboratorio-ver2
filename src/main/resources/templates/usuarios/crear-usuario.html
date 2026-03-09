@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h2 class="mb-4">Crear Usuario</h2>
+
+                <form
+                    class="mt-3"
+                    hx-post="/api/usuarios"
+                    hx-swap="none"
+                    hx-on::after-request="
+                        if (event.detail.successful) {
+                            alert('Usuario creado correctamente');
+                            htmx.ajax('GET', '/pantallas/usuarios/principal', '#main-content');
+                        }
+                    "
+                >
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre de usuario</label>
+                        <input name="userName"
+                            class="form-control"
+                            required minlength="5" maxlength="50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre completo</label>
+                        <input name="nombre"
+                            class="form-control"
+                            required minlength="5" maxlength="120">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contraseña</label>
+                        <input type="password"
+                            name="password"
+                            class="form-control"
+                            required minlength="5" maxlength="255">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Rol</label>
+                        <select name="esAdmin" class="form-select">
+                            <option value="false">Usuario</option>
+                            <option value="true">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Estado</label>
+                        <select name="activo" class="form-select">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-custom-primary w-100 py-2">
+                        Crear usuario
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary w-100 py-2 mt-2"
+                        hx-get="/pantallas/usuarios/principal"
+                        hx-target="#main-content"
+                        hx-swap="innerHTML">
+                        Volver
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

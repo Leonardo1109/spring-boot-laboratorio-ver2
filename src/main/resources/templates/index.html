@@ -85,6 +85,15 @@
             Visita JSON
         </a>
         -->
+
+        <div sec:authorize="hasRole('ADMIN')">
+            <button class="btn btn-custom-primary mb-2 w-100"
+                    hx-get="/pantallas/usuarios/principal"
+                    hx-target="#main-content"
+                    hx-swap="innerHTML">
+                Usuarios
+            </button>
+        </div>
         
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-custom-primary mb-2 w-100">

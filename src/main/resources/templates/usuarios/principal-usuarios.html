@@ -1,0 +1,113 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h2 class="mb-4">Editar Usuario</h2>
+
+                <!-- BUSCADOR -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Buscar por Nombre o Nombre de Usuario</label>
+                    <input 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Escribe para buscar..."
+                        name="search"
+                        th:value="${search}"
+                        hx-get="/pantallas/usuarios/principal/tabla?page=0"
+                        hx-trigger="keyup changed delay:300ms"
+                        hx-target="#tabla-container"
+                        hx-swap="innerHTML"
+                    >
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h5 class="mb-0">Resultados:</h5>
+
+                    <button class="btn btn-custom-primary"
+                            hx-get="/pantallas/usuarios/crear"
+                            hx-target="#main-content"
+                            hx-swap="innerHTML">
+                        Crear Usuario
+                    </button>
+                </div>
+
+                <div id="tabla-container" th:fragment="tablaContainer">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Nombre de Usuario</th>
+                                <th>Admin</th>
+                                <th>Activo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabla-body">
+                            <th:block th:each="u : ${usuarios}">
+                                <tr>
+                                    <td>[[${u.nombre}]]</td>
+                                    <td>[[${u.userName}]]</td>
+                                    <td>
+                                        <span th:if="${u.esAdmin}" class="badge bg-primary">Admin</span>
+                                        <span th:unless="${u.esAdmin}" class="badge bg-secondary">Usuario</span>
+                                    </td>
+                                    
+                                    <td>
+                                        <span th:if="${u.activo}" class="badge bg-success">Activo</span>
+                                        <span th:unless="${u.activo}" class="badge bg-danger">Inactivo</span>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-custom-primary btn-sm"
+                                            th:hx-get="@{/pantallas/usuarios/editar(id=${u.id})}"
+                                            hx-target="#main-content"
+                                            hx-swap="innerHTML">
+                                            Editar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination">
+                    
+                            <li th:if="${page.hasPrevious()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/usuarios/principal/tabla(page=${page.number - 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Anterior
+                                </button>
+                            </li>
+                    
+                            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                th:classappend="${i == page.number} ? 'active'"
+                                class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/usuarios/principal/tabla(page=${i}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML"
+                                th:text="${i + 1}">
+                                </button>
+                            </li>
+                    
+                            <li th:if="${page.hasNext()}" class="page-item">
+                                <button class="page-link"
+                                th:hx-get="@{/pantallas/usuarios/principal/tabla(page=${page.number + 1}, search=${search})}"
+                                hx-target="#tabla-container"
+                                hx-swap="innerHTML">
+                                Siguiente
+                                </button>
+                            </li>                    
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
