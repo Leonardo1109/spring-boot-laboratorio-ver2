@@ -443,7 +443,7 @@ export class ProyectoPage {
                     : "Proyecto Creado Correctamente"
                 );
                     
-                const redirectUrl = isEdit ? "/pantallas/proyectos/editar" : "/pantallas/proyectos/crear";
+                const redirectUrl = isEdit ? "/pantallas/proyectos/editar" : "/pantallas/proyectos/editar";
                 await this.swapMainContent(redirectUrl);
                     
             } catch (error) {

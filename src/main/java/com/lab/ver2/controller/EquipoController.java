@@ -72,7 +72,7 @@ public class EquipoController {
         return ResponseEntity.noContent().build();
     }
     
-    @PostMapping("/{idEquipo}/editar-asistencia")
+    @PostMapping("/asistencia/{idEquipo}")
     public ResponseEntity<Void> editarAsistenciaPorEquipo(
         @Valid @ModelAttribute AsistenciaPostDTO dtoAsistencia, 
         @PathVariable Integer idEquipo,

@@ -3,9 +3,10 @@ package com.lab.ver2.controller;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;    
 
-import com.lab.ver2.dto.EquipoGetDTO;
+
+import com.lab.ver2.dto.EquipoGetDTO; 
 import com.lab.ver2.model.Asistencia;
 import com.lab.ver2.model.Equipo;
 import com.lab.ver2.model.Proyecto;
@@ -15,9 +16,6 @@ import com.lab.ver2.service.*;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @Controller
 @RequestMapping("/pantallas")
@@ -100,14 +98,6 @@ public class PantallasController {
         return "visitas/crear-visita"; // HTML
     }
 
-    /*
-    @GetMapping("/visitas/editar")
-    public String editarVisita(Model model) {
-        model.addAttribute("visitasRecientes", visitaService.getFirst5());
-        return "visitas/editar-visita";
-    }
-    */
-
     @GetMapping("/visitas/editar")
     public String paginaEditarVisitas(
             @RequestParam(required = false) String search,
@@ -161,14 +151,6 @@ public class PantallasController {
     public String crearProyectoForm() {
         return "proyectos/crear-proyecto";
     }
-
-    /*
-    @GetMapping("/proyectos/editar")
-    public String editarProyecto(Model model) {
-        model.addAttribute("proyectosRecientes", proyectoService.getFirst5());
-        return "proyectos/editar-proyecto";
-    }
-    */
 
     @GetMapping("/proyectos/editar")
     public String paginaEditarProyectos(

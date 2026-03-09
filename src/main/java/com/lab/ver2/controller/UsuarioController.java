@@ -59,11 +59,4 @@ public class UsuarioController {
         return usuarioService.actualizarUsuario(id, dto);
     }
     
-    /*
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
-        usuarioService.eliminarUsuario(id);
-    }
-    */
-
 }

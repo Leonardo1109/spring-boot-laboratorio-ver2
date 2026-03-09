@@ -16,9 +16,7 @@
 
                 <button 
                     class="w-100 text-start border-0 bg-transparent"
-                    th:hx-get="@{/pantallas/proyectos/form-editar(id=${p.id})}"
-                    hx-target="#form-editar"
-                    hx-swap="innerHTML">
+                    th:attr="data-proyecto-id=${p.id}">
 
                     <div class="fw-semibold text-dark">
                         [[${p.clave}]]

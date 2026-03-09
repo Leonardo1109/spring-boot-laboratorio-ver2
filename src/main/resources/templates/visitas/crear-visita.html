@@ -14,7 +14,7 @@
                     hx-on::after-request="
                         if (event.detail.successful && event.detail.elt === this) {
                             alert('Visitante creado correctamente');
-                            htmx.ajax('GET', '/pantallas/visitas/crear', '#main-content');
+                            htmx.ajax('GET', '/pantallas/visitas/editar', '#main-content');
                         }
                     "
                 >

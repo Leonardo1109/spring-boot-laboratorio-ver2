@@ -44,7 +44,7 @@ public class AsistenciaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/equipo/{id}/activa")
+    @GetMapping("/equipo/activa/{id}")
     public ResponseEntity<AsistenciaGetDTO> asistenciaActiva(@PathVariable Integer id){
         return asistenciaService
             .getAsistenciaPorEquipoActivo(id)

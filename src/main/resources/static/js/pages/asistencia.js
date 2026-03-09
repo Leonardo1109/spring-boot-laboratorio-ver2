@@ -26,7 +26,8 @@ export class AsistenciaActivaPage {
     }
 
     static cargarAsistenciaActiva(equipoId) {
-        fetch(`/api/asistencias/equipo/${equipoId}/activa`)
+        // @GetMapping("/equipo/activa/{id}")
+        fetch(`/api/asistencias/equipo/activa/${equipoId}`)
             .then(async r => {
                 if (r.status === 204) return null;
                 if (!r.ok) throw new Error('Error HTTP ' + r.status);
@@ -77,7 +78,8 @@ export class AsistenciaActivaPage {
                             <label class="form-label">Hora de salida</label>
                             <input type="datetime-local" class="form-control"
                                 value="${this.toInputDate(salida)}"
-                                ${!a ? 'readonly' : ''}>
+                                ${!a ? 'readonly' : 
+                                    estatusActual === 3 ? 'readonly' : ''}>
                         </div>
                     </div>
                 </div>
@@ -418,23 +420,28 @@ export class AsistenciaActivaPage {
         if (!this.root) return;
 
         this.root.addEventListener('click', (e) =>  {
-            const proyectoBtn = e.target.closest('[hx-get*="/pantallas/proyectos/"]');
+            //const proyectoBtn = e.target.closest('[hx-get*="/pantallas/proyectos/"]');
+            const proyectoBtn = e.target.closest('[data-proyecto-id]');
             if (proyectoBtn) {
-                const url = proyectoBtn.getAttribute('hx-get');
-                const params = new URLSearchParams(url.split('?')[1]);
-                const proyectoId = params.get('id');
-                if (!proyectoId) return;
+                //const url = proyectoBtn.getAttribute('hx-get');
+                //const params = new URLSearchParams(url.split('?')[1]);
+                //const proyectoId = params.get('id');
+                const proyectoId = proyectoBtn.dataset.proyectoId;
+                //if (!proyectoId) return;
 
                 e.preventDefault();
                 this.onProyectoSeleccionado(proyectoId);
                 return;
             }
             
-            const visitaBtn = e.target.closest('button[hx-get*="/pantallas/visitas/"]');
+            // const visitaBtn = e.target.closest('button[hx-get*="/pantallas/visitas/"]');
+            const visitaBtn = e.target.closest('[data-visita-id]');
             if (visitaBtn) {
-                const url = visitaBtn.getAttribute('hx-get');
-                const params = new URLSearchParams(url.split('?')[1]);
-                const visitaId = params.get('id');
+                // const url = visitaBtn.getAttribute('hx-get');
+                // const params = new URLSearchParams(url.split('?')[1]);
+                // const visitaId = params.get('id');
+
+                const visitaId = visitaBtn.dataset.visitaId;
 
                 e.preventDefault();
                 this.onVisitaSeleccionada(visitaId);

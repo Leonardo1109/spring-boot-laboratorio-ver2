@@ -14,7 +14,7 @@
                     hx-on::after-request="
                         if (event.detail.successful) {
                             alert('Equipo creado correctamente');
-                            htmx.ajax('GET', '/pantallas/equipos/crear', '#main-content');
+                            htmx.ajax('GET', '/pantallas/equipos/editar', '#main-content');
                         }
                     "
                 >
@@ -65,8 +65,7 @@
                             type="text" 
                             name="observaciones" 
                             class="form-control" 
-                            minlength="5"
-                            required>
+                            minlength="5">
                     </div>
 
                     <!-- ESTATUS -->

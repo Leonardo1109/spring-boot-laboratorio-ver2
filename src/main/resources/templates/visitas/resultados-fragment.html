@@ -16,9 +16,7 @@
 
                 <button 
                     class="w-100 text-start border-0 bg-transparent"
-                    th:hx-get="@{/pantallas/visitas/form-editar(id=${v.id})}"
-                    hx-target="#form-editar"
-                    hx-swap="innerHTML">
+                    th:attr="data-visita-id=${v.id}">
 
                     <div class="fw-semibold text-dark">
                         [[${v.noCuentaRFC}]]
