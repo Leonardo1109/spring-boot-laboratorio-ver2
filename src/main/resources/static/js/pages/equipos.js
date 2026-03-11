@@ -71,6 +71,29 @@ export class EquiposPage {
         });
     }
 
+    static roles = null;
+
+    static obtenerRoles() {
+        if(this.roles) return this.roles;
+        
+        const app = document.getElementById("app");
+        if (!app) return [];
+
+        const roles = app.dataset.roles;
+
+        this.roles = roles
+            .replace('[','')
+            .replace(']','')
+            .split(',')
+            .map(r => r.trim());
+
+        return this.roles;
+    }
+    
+    static esAdmin() {
+        return this.obtenerRoles().includes("ROLE_ADMIN");
+    }
+
     static cargar() {
         fetch('/api/equipos')
             .then(r => r.json())
@@ -113,8 +136,32 @@ export class EquiposPage {
             const ruta = this.obtenerRutaPorEstatus(e.estatus.id, e.id);
 
             const mensajeButton = (e.estatus.id >= 1 && e.estatus.id <= 3) 
-                ? "Registrar Asistencia"
-                : "Cambiar Estado";
+            ? "Registrar Asistencia"
+            : "Cambiar Estado";
+
+            let button = "";
+
+            if (e.estatus.id >= 1 && e.estatus.id <= 3) {
+                button = `
+                    <button class="btn btn-custom-primary btn-sm"
+                        hx-get="${ruta}" 
+                        hx-target="#main-content"
+                        hx-swap="innerHTML">
+                        ${mensajeButton}
+                    </button>
+                `;
+            }
+
+            if ((e.estatus.id === 4 || e.estatus.id === 5) && this.esAdmin()) {
+                button = `
+                    <button class="btn btn-custom-primary btn-sm"
+                        hx-get="${ruta}" 
+                        hx-target="#main-content"
+                        hx-swap="innerHTML">
+                        ${mensajeButton}
+                    </button>
+                `;
+            }
             
             const estilo = this.estilosPorEstatus[e.estatus.id];
 
@@ -138,13 +185,7 @@ export class EquiposPage {
                         <p class="small mb-3"><strong>Tipo:</strong> ${e.tipoEquipo.descripcion}</p>
 
                         <div class="mt-auto text-end">
-                            <button 
-                                class="btn btn-custom-primary btn-sm"
-                                hx-get="${ruta}" 
-                                hx-target="#main-content"
-                                hx-swap="innerHTML">
-                                ${mensajeButton}
-                            </button>
+                            ${button}
                         </div>
                     </div>
                 </div>

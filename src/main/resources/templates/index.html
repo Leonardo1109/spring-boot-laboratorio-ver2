@@ -14,7 +14,9 @@
 
 </head>
 
-<body>
+<body
+    id="app"
+    th:attr="data-roles=${#authentication.authorities.?[true].![authority]}">
 
 <div class="d-flex vh-100">
 

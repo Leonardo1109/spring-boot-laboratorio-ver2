@@ -179,7 +179,8 @@ public class SecurityConfig {
                     "/pantallas/proyectos/crear",
                     "/pantallas/proyectos/editar",
                     "/pantallas/proyectos/editar/tabla",
-                    "/pantallas/proyectos/form-editar"
+                    "/pantallas/proyectos/form-editar",
+                    "/pantallas/asistencias/cambiar-estado"
                 ).hasRole("ADMIN")
 
                 ///
@@ -190,7 +191,10 @@ public class SecurityConfig {
                     "/pantallas/inicio",
                     "/pantallas/visitas/buscar",
                     "/pantallas/proyectos/buscar",
-                    "/pantallas/asistencias/**"
+                    "/pantallas/asistencias/principal",
+                    "/pantallas/asistencias/registrar",
+                    "/pantallas/asistencias/mostrar",
+                    "/pantallas/asistencias/mostrar/tabla"
                 ).authenticated()
                 
                 ///
