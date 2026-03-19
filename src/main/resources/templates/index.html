@@ -96,12 +96,34 @@
                 Usuarios
             </button>
         </div>
+
+        <button class="btn btn-custom-primary mb-2"
+                hx-get="/pantallas/creditos"
+                hx-target="#main-content"
+                hx-swap="innerHTML">
+            Creditos
+        </button>
         
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-custom-primary mb-2 w-100">
                 Cerrar sesión
             </button>
         </form>        
+
+        <hr>
+        <div class="text-center">
+
+            <img sec:authorize="hasRole('ADMIN')"
+                 src="/img/fes-aragon-unam-seeklogo.png"
+                 alt="FES Aragon"
+                 width="25%">
+        
+            <img sec:authorize="!hasRole('ADMIN')"
+                 src="/img/fes-aragon-unam-seeklogo.png"
+                 alt="FES Aragon"
+                 width="65%">
+        </div>
+
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->

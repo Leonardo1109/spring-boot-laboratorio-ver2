@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.lab.ver2.dto.EquipoGetDTO; 
-import com.lab.ver2.model.Asistencia;
-import com.lab.ver2.model.Equipo;
-import com.lab.ver2.model.Proyecto;
-import com.lab.ver2.model.Usuario;
-import com.lab.ver2.model.Visita;
+import com.lab.ver2.model.*;
 import com.lab.ver2.service.*;
 
 import org.springframework.ui.Model;
@@ -36,6 +32,11 @@ public class PantallasController {
     @GetMapping("/inicio")
     public String retornoHome() {
         return "inicio"; 
+    }
+
+    @GetMapping("/creditos")
+    public String creditos() {
+        return "creditos"; 
     }
 
     // ====================================================================================== //
